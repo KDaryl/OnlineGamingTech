@@ -18,6 +18,17 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\Game.cpp" />
+    <ClCompile Include="source\InputHandler.cpp" />
+    <ClCompile Include="source\Main.cpp" />
+    <ClCompile Include="source\Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="header\Game.h" />
+    <ClInclude Include="header\InputHandler.h" />
+    <ClInclude Include="header\Timer.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{BD8842B3-22DE-4DAD-9D9D-AE630F7652D9}</ProjectGuid>
@@ -76,7 +87,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(projectDir)SDL2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)SDL2\include;$(projectDir)\header</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2main.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -120,17 +131,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="InputHandler.h" />
-    <ClInclude Include="Timer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="InputHandler.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Timer.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
