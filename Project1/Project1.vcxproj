@@ -20,16 +20,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Game.cpp" />
+    <ClCompile Include="source\GameScene.cpp" />
     <ClCompile Include="source\InputHandler.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\NetworkClient.cpp" />
     <ClCompile Include="source\NetworkServer.cpp" />
+    <ClCompile Include="source\Player.cpp" />
+    <ClCompile Include="source\ResourceHandler.cpp" />
+    <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Game.h" />
+    <ClInclude Include="header\GameScene.h" />
     <ClInclude Include="header\InputHandler.h" />
     <ClInclude Include="header\Network.h" />
+    <ClInclude Include="header\Player.h" />
+    <ClInclude Include="header\ResourceHandler.h" />
+    <ClInclude Include="header\Sprite.h" />
     <ClInclude Include="header\Timer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -90,11 +98,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(projectDir)SDL2\include;$(projectDir)\header</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)SDL2\include;$(projectDir)\header;$(projectDir)SDL2\SDL2_image\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2main.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(projectDir)SDL2\lib\x86;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2main.lib;SDL2_image.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(projectDir)SDL2\lib\x86;$(projectDir)SDL2\SDL2_image\lib\x86</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>

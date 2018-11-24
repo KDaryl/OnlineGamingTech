@@ -7,6 +7,7 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 	m_gameCreated(true),
 	m_frameRate(FPS),
 	m_msPerFrame(0),
+	m_resources("images/"),
 	m_serverConnection("127.0.0.1", 100) //Create a connection to the server at IP and PORT
 {
 	//Initialize SDL
@@ -19,18 +20,43 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 	{
 		//Create window
 		m_gWindow = SDL_CreateWindow("Entity Component System", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windoWidth, windowHeight, SDL_WINDOW_SHOWN);
-		if (m_gWindow == NULL)
+
+		//Initialize PNG loading
+		int imgFlags = IMG_INIT_PNG;
+
+		//Initialise loading of PNG's
+		if (!(IMG_Init(imgFlags) & imgFlags))
+		{
+			printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+			m_gameCreated = false;
+		}	
+		else if (m_gWindow == NULL)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 			m_gameCreated = false;
 		}
-		else
-		{
-			//Get window surface
-			m_gScreenSurface = SDL_GetWindowSurface(m_gWindow);
-			m_msPerFrame = (1.0 / m_frameRate) * 1000; //Get the MS per frame
 
-			m_connectedToServer = false;
+		else
+		{	
+			m_gRenderer = SDL_CreateRenderer(m_gWindow, -1, SDL_RENDERER_ACCELERATED);
+			
+			if (m_gRenderer == NULL)
+			{
+				printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
+				m_gameCreated = false;
+			}
+			else
+			{
+				//Get window surface
+				m_gScreenSurface = SDL_GetWindowSurface(m_gWindow);
+				m_msPerFrame = (1.0 / m_frameRate) * 1000; //Get the MS per frame
+
+				//Load our textures
+				m_resources.loadTextures(*m_gRenderer);
+
+				//Set connected to server to false
+				m_connectedToServer = false;
+			}
 		}
 	}
 }
@@ -89,7 +115,7 @@ void Game::update()
 {
 	m_input.update(); //Update the input handler
 
-	if (!m_connectedToServer && m_input.isButtonPressed("W"))
+	if (!m_connectedToServer && m_input.isButtonPressed("C"))
 	{
 
 		//If it fails to connect to the server then delete our ptr
@@ -108,19 +134,27 @@ void Game::update()
 void Game::draw()
 {
 	//Clear the entire screen
-	SDL_FillRect(m_gScreenSurface, NULL, 0x000000);
+	SDL_RenderClear(m_gRenderer);
+	//SDL_FillRect(m_gScreenSurface, NULL, 0x000000);
 
 	//Draw our game objects here
 
 	//Update the surface
-	SDL_UpdateWindowSurface(m_gWindow);
+	SDL_RenderPresent(m_gRenderer);
+	//SDL_UpdateWindowSurface(m_gWindow);
 }
 
 void Game::close()
 {
+	//Destroy any loaded textures
+	m_resources.destroyTextures();
+
 	//Destroy window
 	SDL_DestroyWindow(m_gWindow);
 	m_gWindow = NULL;
+
+	//Quit SDL image systems
+	IMG_Quit();
 
 	//Quit SDL subsystems
 	SDL_Quit();

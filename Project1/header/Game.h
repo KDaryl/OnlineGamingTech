@@ -1,10 +1,12 @@
 #pragma once
 #include "SDL.h"
+#include "SDL_image.h"
 #include <stdio.h>
 
 //Include MY header files
 #include "Timer.h"
 #include "InputHandler.h"
+#include "ResourceHandler.h"
 #include "Network.h"
 
 class Game
@@ -24,6 +26,8 @@ private:
 	SDL_Window* m_gWindow;
 	//The surface contained by the window
 	SDL_Surface* m_gScreenSurface;
+	//The renderer, we will use this to draw images
+	SDL_Renderer* m_gRenderer;
 	bool m_gameCreated; // Bool to hold wheter the game was succesfulyl created or not
 	bool m_quitGame; //Bool to hold wheter to quit the game or not
 
@@ -33,7 +37,8 @@ private:
 
 	//Game variables
 	InputHandler m_input;
-
+	ResourceHandler m_resources;
+	 
 	//Temp variables for connection test
 	bool m_connectedToServer;
 	Client m_serverConnection;
