@@ -27,7 +27,10 @@
     <ClCompile Include="source\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\TcpListener.cpp">
+    <ClCompile Include="source\NetworkClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\NetworkServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +44,7 @@
     <ClInclude Include="header\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="header\TcpListener.h">
+    <ClInclude Include="header\Network.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

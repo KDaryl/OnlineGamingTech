@@ -22,13 +22,14 @@
     <ClCompile Include="source\Game.cpp" />
     <ClCompile Include="source\InputHandler.cpp" />
     <ClCompile Include="source\Main.cpp" />
-    <ClCompile Include="source\TcpListener.cpp" />
+    <ClCompile Include="source\NetworkClient.cpp" />
+    <ClCompile Include="source\NetworkServer.cpp" />
     <ClCompile Include="source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Game.h" />
     <ClInclude Include="header\InputHandler.h" />
-    <ClInclude Include="header\TcpListener.h" />
+    <ClInclude Include="header\Network.h" />
     <ClInclude Include="header\Timer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -58,6 +58,15 @@ bool Server::ListenForNewConnection()
 			std::string msg = "Migrating host";
 			SendString(0, msg);
 			SendString(1, msg);
+
+			//****Randomly pick a host
+			//Select connection at ID 1 as the host
+			msg = "You are the host";
+			SendString(1, msg);
+			Sleep(100); //Wait for the host to setup itself as the server
+			//Tell ID 0 to connect to 1
+			msg = "Connect to";
+			SendString(0, msg);
 		}
 
 		return true;
