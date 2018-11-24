@@ -6,7 +6,7 @@
 //Include MY header files
 #include "Timer.h"
 #include "InputHandler.h"
-#include "ResourceHandler.h"
+#include "GameScene.h"
 #include "Network.h"
 
 class Game
@@ -37,10 +37,10 @@ private:
 
 	//Game variables
 	InputHandler m_input;
+	GameScene m_gameScene;
 	ResourceHandler m_resources;
 	 
 	//Temp variables for connection test
 	bool m_connectedToServer;
 	Client m_serverConnection;
 };
-

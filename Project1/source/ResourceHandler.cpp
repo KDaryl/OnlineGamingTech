@@ -12,7 +12,7 @@ ResourceHandler::~ResourceHandler()
 //Load all of our textures we need for the game
 void ResourceHandler::loadTextures(SDL_Renderer& renderer)
 {
-	m_map["Circle"] = loadFromPath("Circles.png", renderer);
+	m_map["Player"] = loadFromPath("Player.png", renderer);
 }
 
 SDL_Texture* ResourceHandler::loadFromPath(std::string fileName, SDL_Renderer& renderer)

@@ -19,7 +19,7 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 	else
 	{
 		//Create window
-		m_gWindow = SDL_CreateWindow("Entity Component System", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windoWidth, windowHeight, SDL_WINDOW_SHOWN);
+		m_gWindow = SDL_CreateWindow("OGT Project - Daryl Keogh C00207452", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windoWidth, windowHeight, SDL_WINDOW_SHOWN);
 
 		//Initialize PNG loading
 		int imgFlags = IMG_INIT_PNG;
@@ -53,6 +53,9 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 
 				//Load our textures
 				m_resources.loadTextures(*m_gRenderer);
+
+				//Set all the textures for the game as appropriate
+				m_gameScene.setTexture(m_resources);
 
 				//Set connected to server to false
 				m_connectedToServer = false;
@@ -115,6 +118,9 @@ void Game::update()
 {
 	m_input.update(); //Update the input handler
 
+	//Update the game scene
+	m_gameScene.update();
+
 	if (!m_connectedToServer && m_input.isButtonPressed("C"))
 	{
 
@@ -138,6 +144,7 @@ void Game::draw()
 	//SDL_FillRect(m_gScreenSurface, NULL, 0x000000);
 
 	//Draw our game objects here
+	m_gameScene.draw(m_gRenderer);
 
 	//Update the surface
 	SDL_RenderPresent(m_gRenderer);

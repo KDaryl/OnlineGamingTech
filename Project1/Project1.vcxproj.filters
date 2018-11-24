@@ -77,5 +77,8 @@
     <ClInclude Include="header\Sprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="header\Scene.h">
+      <Filter>Header Files\Scene Headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
