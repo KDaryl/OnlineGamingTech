@@ -30,9 +30,6 @@
     <ClCompile Include="source\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\InputHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -66,12 +63,12 @@
     <ClCompile Include="source\ResourceHandler.cpp">
       <Filter>Source Files\Helper Source</Filter>
     </ClCompile>
+    <ClCompile Include="source\InputHandler.cpp">
+      <Filter>Source Files\Helper Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="header\InputHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="header\Network.h">
@@ -102,6 +99,9 @@
       <Filter>Header Files\Helper Headers</Filter>
     </ClInclude>
     <ClInclude Include="header\ResourceHandler.h">
+      <Filter>Header Files\Helper Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="header\InputHandler.h">
       <Filter>Header Files\Helper Headers</Filter>
     </ClInclude>
   </ItemGroup>

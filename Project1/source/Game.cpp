@@ -125,6 +125,11 @@ void Game::update()
 	//Update Our sceneManager
 	m_sceneManager.update();
 
+	if (m_input.isButtonPressed("W"))
+	{
+		m_sceneManager.setCurrent("Game Scene");
+	}
+
 	if (!m_connectedToServer && m_input.isButtonPressed("C"))
 	{
 

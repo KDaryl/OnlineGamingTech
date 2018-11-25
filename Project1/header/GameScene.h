@@ -14,5 +14,6 @@ public:
 	void setTexture(ResourceHandler& resources);
 private:
 	Player m_player;
+	Sprite m_bgSprite;
 };
 

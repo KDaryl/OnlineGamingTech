@@ -1,4 +1,5 @@
 #include "InputHandler.h"
+#include <iostream>
 
 InputHandler::InputHandler()
 {
@@ -13,6 +14,9 @@ InputHandler::InputHandler()
 	
 	//Copy the values of current to previous
 	m_previous = m_current;
+
+	//Create collider for mouse
+	m_mouseCollider.setSize(2, 2); //Make it small
 }
 
 InputHandler::~InputHandler()
@@ -25,11 +29,18 @@ void InputHandler::update()
 
 	m_previous = m_current; //Set our previous
 
+	//Get mouse position
+	SDL_GetMouseState(&m_mousePos.first, &m_mousePos.second);
+
+	//Set mouse collider position
+	m_mouseCollider.setPosition(m_mousePos.first, m_mousePos.second);
+
 	//Check if the keys are currently down
 	m_current["W"] = m_keyStates[SDL_SCANCODE_W];
 	m_current["A"] = m_keyStates[SDL_SCANCODE_A];
 	m_current["S"] = m_keyStates[SDL_SCANCODE_S];
 	m_current["D"] = m_keyStates[SDL_SCANCODE_D];
+	m_current["Mouse_LEFT"] = SDL_BUTTON(SDL_BUTTON_LEFT); //Get left mouse click 
 }
 
 void InputHandler::checkKey(std::string key, SDL_Keycode code)
