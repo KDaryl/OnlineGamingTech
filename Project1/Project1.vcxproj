@@ -19,25 +19,31 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\CollisionBox.cpp" />
     <ClCompile Include="source\Game.cpp" />
     <ClCompile Include="source\GameScene.cpp" />
     <ClCompile Include="source\InputHandler.cpp" />
     <ClCompile Include="source\Main.cpp" />
+    <ClCompile Include="source\MainMenu.cpp" />
     <ClCompile Include="source\NetworkClient.cpp" />
     <ClCompile Include="source\NetworkServer.cpp" />
     <ClCompile Include="source\Player.cpp" />
     <ClCompile Include="source\ResourceHandler.cpp" />
+    <ClCompile Include="source\SceneManager.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="header\CollisionBox.h" />
     <ClInclude Include="header\Game.h" />
     <ClInclude Include="header\GameScene.h" />
     <ClInclude Include="header\InputHandler.h" />
+    <ClInclude Include="header\MainMenu.h" />
     <ClInclude Include="header\Network.h" />
     <ClInclude Include="header\Player.h" />
     <ClInclude Include="header\ResourceHandler.h" />
     <ClInclude Include="header\Scene.h" />
+    <ClInclude Include="header\SceneManager.h" />
     <ClInclude Include="header\Sprite.h" />
     <ClInclude Include="header\Timer.h" />
   </ItemGroup>

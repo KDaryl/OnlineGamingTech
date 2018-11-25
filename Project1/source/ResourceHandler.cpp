@@ -13,6 +13,7 @@ ResourceHandler::~ResourceHandler()
 void ResourceHandler::loadTextures(SDL_Renderer& renderer)
 {
 	m_map["Player"] = loadFromPath("Player.png", renderer);
+	m_map["Game BG"] = loadFromPath("Game BG.png", renderer);
 }
 
 SDL_Texture* ResourceHandler::loadFromPath(std::string fileName, SDL_Renderer& renderer)

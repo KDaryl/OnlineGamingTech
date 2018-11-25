@@ -25,12 +25,18 @@ void Sprite::setTexture(SDL_Texture* texture)
 
 	//Assign destination rectangle the source rectangle as we want to draw the entire thing
 	m_dst = m_src;
+
+	//Set the size of the rectangle
+	m_collider.setSize(m_dst.w, m_dst.h);
 }
 
 void Sprite::setPosition(float x, float y)
 {
 	m_pos.x = x;
 	m_pos.y = y;
+
+	//Set the position of our collider
+	m_collider.setPosition(m_pos.x, m_pos.y);
 }
 
 void Sprite::setTextureRect(int x, int y, int w, int h)
@@ -44,4 +50,7 @@ void Sprite::setTextureRect(int x, int y, int w, int h)
 	//Set our destination rectangle to have the same W and H
 	m_dst.w = w;
 	m_dst.h = h;
+
+	//Set the size of the rectangle
+	m_collider.setSize(m_dst.w, m_dst.h);
 }

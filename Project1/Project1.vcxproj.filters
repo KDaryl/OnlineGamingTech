@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Scene Source">
       <UniqueIdentifier>{0aa1db04-50d0-42e6-b94b-bb7d3df28645}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Helper Headers">
+      <UniqueIdentifier>{e8afc5cb-0bea-4f39-a53f-bfc42bffe7c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Helper Source">
+      <UniqueIdentifier>{1f8ab92a-6a68-4244-8590-d427f1a6ea01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Game.cpp">
@@ -30,9 +36,6 @@
     <ClCompile Include="source\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\NetworkClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,14 +45,26 @@
     <ClCompile Include="source\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\ResourceHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\GameScene.cpp">
       <Filter>Source Files\Scene Source</Filter>
     </ClCompile>
+    <ClCompile Include="source\MainMenu.cpp">
+      <Filter>Source Files\Scene Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SceneManager.cpp">
+      <Filter>Source Files\Scene Source</Filter>
+    </ClCompile>
     <ClCompile Include="source\Sprite.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Helper Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Timer.cpp">
+      <Filter>Source Files\Helper Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CollisionBox.cpp">
+      <Filter>Source Files\Helper Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ResourceHandler.cpp">
+      <Filter>Source Files\Helper Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,26 +74,35 @@
     <ClInclude Include="header\InputHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="header\Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="header\Network.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="header\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="header\ResourceHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="header\GameScene.h">
       <Filter>Header Files\Scene Headers</Filter>
     </ClInclude>
-    <ClInclude Include="header\Sprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="header\Scene.h">
       <Filter>Header Files\Scene Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="header\MainMenu.h">
+      <Filter>Header Files\Scene Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="header\SceneManager.h">
+      <Filter>Header Files\Scene Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Sprite.h">
+      <Filter>Header Files\Helper Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Timer.h">
+      <Filter>Header Files\Helper Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="header\CollisionBox.h">
+      <Filter>Header Files\Helper Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="header\ResourceHandler.h">
+      <Filter>Header Files\Helper Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

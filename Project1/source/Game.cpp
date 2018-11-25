@@ -55,7 +55,7 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 				m_resources.loadTextures(*m_gRenderer);
 
 				//Set all the textures for the game as appropriate
-				m_gameScene.setTexture(m_resources);
+				m_sceneManager.setTexture(m_resources);
 
 				//Set connected to server to false
 				m_connectedToServer = false;
@@ -116,10 +116,14 @@ void Game::processEvents(SDL_Event & e)
 
 void Game::update()
 {
-	m_input.update(); //Update the input handler
+	//Update the input handler
+	m_input.update(); 
 
-	//Update the game scene
-	m_gameScene.update();
+	//Handle input in our scene manager
+	m_sceneManager.handleInput(m_input);
+
+	//Update Our sceneManager
+	m_sceneManager.update();
 
 	if (!m_connectedToServer && m_input.isButtonPressed("C"))
 	{
@@ -141,14 +145,12 @@ void Game::draw()
 {
 	//Clear the entire screen
 	SDL_RenderClear(m_gRenderer);
-	//SDL_FillRect(m_gScreenSurface, NULL, 0x000000);
 
 	//Draw our game objects here
-	m_gameScene.draw(m_gRenderer);
+	m_sceneManager.draw(m_gRenderer);
 
 	//Update the surface
 	SDL_RenderPresent(m_gRenderer);
-	//SDL_UpdateWindowSurface(m_gWindow);
 }
 
 void Game::close()
