@@ -10,7 +10,7 @@ public:
 	~GameScene();
 	void update();
 	void draw(SDL_Renderer* renderer);
-	void handleInput(InputHandler& input);
+	std::string handleInput(InputHandler& input, std::string currentScene);
 	void setTexture(ResourceHandler& resources);
 private:
 	Player m_player;

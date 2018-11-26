@@ -125,19 +125,16 @@ void Game::update()
 	//Update Our sceneManager
 	m_sceneManager.update();
 
-	if (m_input.isButtonPressed("W"))
-	{
-		m_sceneManager.setCurrent("Game Scene");
-	}
-
+	//Dont delete, this is currently not reachable but will be used for future reference
 	if (!m_connectedToServer && m_input.isButtonPressed("C"))
 	{
 
-		//If it fails to connect to the server then delete our ptr
+		//Try connect to our server, if it fails output the error
 		if (!m_serverConnection.ConnectToServer())
 		{
 			std::cout << "Could not connect to central server" << std::endl;
 		}
+		//Else say we connected and set our boolean
 		else
 		{
 			m_connectedToServer = true;

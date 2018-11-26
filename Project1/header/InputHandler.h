@@ -23,6 +23,7 @@ public:
 	bool isButtonDown(std::string button);
 	int getMouseX() { return m_mousePos.first; }
 	int getMouseY() { return m_mousePos.second; }
+	CollisionBox& getMouseCollider() { return m_mouseCollider; }
 private:
 	Mouse m_mousePos;
 	Input m_current;

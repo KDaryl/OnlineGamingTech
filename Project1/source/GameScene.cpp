@@ -23,8 +23,12 @@ void GameScene::draw(SDL_Renderer * renderer)
 	m_player.draw(renderer);
 }
 
-void GameScene::handleInput(InputHandler & input)
+std::string GameScene::handleInput(InputHandler & input, std::string currentScene)
 {
+	std::string newScene = currentScene;
+
+
+	return newScene;
 }
 
 void GameScene::setTexture(ResourceHandler & resources)

@@ -1,5 +1,7 @@
 #pragma once
 #include "Scene.h"
+#include "Button.h"
+#include <map>
 
 class MainMenuScene : public Scene
 {
@@ -9,8 +11,8 @@ public:
 	~MainMenuScene();
 	void update();
 	void draw(SDL_Renderer* renderer);
-	void handleInput(InputHandler& input);
+	std::string handleInput(InputHandler& input, std::string currentScene);
 	void setTexture(ResourceHandler& resources);
 private:
-	Sprite m_playGameButton;
+	std::map<std::string, Button> m_buttons;
 };

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Button.cpp" />
     <ClCompile Include="source\CollisionBox.cpp" />
     <ClCompile Include="source\Game.cpp" />
     <ClCompile Include="source\GameScene.cpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="header\Button.h" />
     <ClInclude Include="header\CollisionBox.h" />
     <ClInclude Include="header\Game.h" />
     <ClInclude Include="header\GameScene.h" />
