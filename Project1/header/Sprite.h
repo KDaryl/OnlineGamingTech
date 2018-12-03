@@ -14,6 +14,7 @@ public:
 	~Sprite();
 
 	void draw(SDL_Renderer* renderer);
+	void draw(SDL_Renderer* renderer, SDL_Rect* src);
 
 	//Setters
 	void setTexture(SDL_Texture* texture);

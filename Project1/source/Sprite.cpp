@@ -2,6 +2,10 @@
 
 Sprite::Sprite()
 {
+	m_src.x = 0;
+	m_src.y = 0;
+	m_pos.x = 0;
+	m_pos.y = 0;
 }
 
 Sprite::~Sprite()
@@ -10,6 +14,16 @@ Sprite::~Sprite()
 
 void Sprite::draw(SDL_Renderer* renderer)
 {
+	m_dst.x = (int)m_pos.x;
+	m_dst.y = (int)m_pos.y;
+
+	SDL_RenderCopy(renderer, m_texture, &m_src, &m_dst);
+}
+
+void Sprite::draw(SDL_Renderer* renderer, SDL_Rect* src)
+{
+	setTextureRect(src->x, src->y, src->w, src->h);
+
 	m_dst.x = (int)m_pos.x;
 	m_dst.y = (int)m_pos.y;
 

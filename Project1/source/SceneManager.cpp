@@ -7,7 +7,7 @@ SceneManager::SceneManager()
 	m_scenes["Game Scene"] = &m_gameScene;
 
 	//Set the current Scene
-	m_current = &m_menuScene;
+	m_current = MTuple("Main Menu", &m_menuScene);
 }
 
 SceneManager::~SceneManager()
@@ -17,27 +17,27 @@ SceneManager::~SceneManager()
 void SceneManager::update()
 {
 	//If the current ptr is not null then update the current scene
-	if (nullptr != m_current)
+	if (nullptr != m_current.second)
 	{
-		m_current->update();
+		m_current.second->update();
 	}
 }
 
 void SceneManager::draw(SDL_Renderer* renderer)
 {
 	//If the current ptr is not null then draw the current scene
-	if (nullptr != m_current)
+	if (nullptr != m_current.second)
 	{
-		m_current->draw(renderer);
+		m_current.second->draw(renderer);
 	}
 }
 
 void SceneManager::handleInput(InputHandler & input)
 {
 	//If nullptr is nopt equal to current then handle input
-	if (nullptr != m_current)
+	if (nullptr != m_current.second)
 	{
-		m_current->handleInput(input);
+		m_current.second->handleInput(input, m_current.first);
 	}
 }
 
@@ -50,7 +50,7 @@ void SceneManager::setCurrent(std::string sceneName)
 		//If the scene name is equal to the passed over string then set the current scene
 		if (scene.first == sceneName)
 		{
-			m_current = scene.second; //Set the current scene
+			m_current = MTuple(sceneName, scene.second); //Set the current scene
 			break;
 		}
 	}

@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "Button.h"
+#include "Timer.h"
 #include <map>
 
 class MainMenuScene : public Scene
@@ -15,4 +16,5 @@ public:
 	void setTexture(ResourceHandler& resources);
 private:
 	std::map<std::string, Button> m_buttons;
+	Timer m_timer;
 };

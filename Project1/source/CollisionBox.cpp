@@ -25,8 +25,8 @@ bool CollisionBox::intersects(CollisionBox & other)
 	//Checks for rectangular collision
 	if (m_x < other.w() && m_w > other.x() &&
 		m_y < other.h() && other.h() > m_y)
-		return false;
-	return true;
+		return true;
+	return false;
 }
 
 void CollisionBox::setSize(float w, float h)
