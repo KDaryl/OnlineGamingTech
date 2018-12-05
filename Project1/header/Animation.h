@@ -19,7 +19,7 @@ public:
 private:
 	std::vector<SDL_Rect> m_rectangles, m_reverseRectangles;
 	Sprite * m_spriteToAnimate;
-	bool m_reverse, m_loop, m_finished, m_play, m_playReverse;
+	bool m_reverse, m_loop, m_finished, m_play, m_playReverse, m_animFinished;
 	int m_currentRect;
 	float m_length;
 	int m_lpf, m_ticksGone, m_maxFrames; //Length per frame

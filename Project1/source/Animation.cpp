@@ -8,6 +8,7 @@ Animation::Animation( bool reverse, bool loop, float length):
 	m_playReverse(false),
 	m_length(length),
 	m_lpf(0),
+	m_animFinished(false),
 	m_ticksGone(0),
 	m_currentRect(0)
 {
@@ -25,19 +26,17 @@ void Animation::setSprite(Sprite& sprite)
 void Animation::update(int dt)
 {
 	//If playing, update the animation
-	if (m_play)
+	if ((m_play || m_playReverse) && m_animFinished == false)
 	{
 		m_ticksGone += dt; //Add to our ticks gone
 
 		//If we have passed our ticks perframe
 		if (m_ticksGone >= m_lpf)
 		{
-			m_ticksGone -= dt;
+			m_ticksGone -= m_lpf;
 
 			//Increase the frame
 			m_currentRect++;
-
-			std::cout << "Next frame" << std::endl;
 
 			//If we have reached the max frames
 			if (m_currentRect == m_maxFrames)
@@ -45,8 +44,15 @@ void Animation::update(int dt)
 				//Go back to our previous frame
 				m_currentRect--;
 				m_ticksGone = 0;
-				std::cout << "ANimation done!" << std::endl;
+				m_animFinished = true;
+				std::cout << "Animation done!" << std::endl;
 			}
+
+			//Set sprite texture
+			if(!m_playReverse)
+				m_spriteToAnimate->setTextureRect(m_rectangles.at(m_currentRect).x, m_rectangles.at(m_currentRect).y, m_rectangles.at(m_currentRect).w, m_rectangles.at(m_currentRect).h);
+			else
+				m_spriteToAnimate->setTextureRect(m_reverseRectangles.at(m_currentRect).x, m_reverseRectangles.at(m_currentRect).y, m_reverseRectangles.at(m_currentRect).w, m_reverseRectangles.at(m_currentRect).h);
 		}
 	}
 }
@@ -62,23 +68,33 @@ void Animation::draw(SDL_Renderer * renderer)
 
 void Animation::play()
 {
-	//Reset our variables
-	m_play = true;
-	m_playReverse = false;
-	m_currentRect = 0;
+	if (m_play == false)
+	{
+		//Reset our variables
+		m_play = true;
+		m_playReverse = false;
+		m_currentRect = 0;
+		m_ticksGone = 0;
+		m_animFinished = false;
+	}
 }
 
 void Animation::playReverse()
 {
-	//if(m_playReverse == false)
-	m_play = false;
-	m_playReverse = true;
-	//m_currentRect = 0;
+	if (m_playReverse == false)
+	{
+		m_play = false;
+		m_playReverse = true;
+		m_currentRect = 0;
+		m_ticksGone = 0;
+		m_animFinished = false;
+	}
 }
 
 void Animation::stop()
 {
 	m_play = false;
+	m_playReverse = false;
 }
 
 //Creates the frames for an animation

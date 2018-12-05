@@ -1,11 +1,11 @@
 #include "Button.h"
 
 Button::Button() :
-	m_animation(true, false, 2.2f),
+	m_animation(true, false, .15f),
 	m_collider(0,0, 540, 75)
 {
 	m_animation.createRectangles(15, 540, 8100, 75);
-
+	m_sprite.setTextureRect(0, 0, 540, 75);
 }
 
 Button::~Button()
@@ -19,7 +19,7 @@ void Button::update(int dt)
 
 void Button::draw(SDL_Renderer * renderer)
 {
-	m_animation.draw(renderer);
+	m_sprite.draw(renderer);
 }
 
 void Button::checkHighlight(InputHandler & input)
@@ -30,7 +30,7 @@ void Button::checkHighlight(InputHandler & input)
 	}
 	else
 	{
-		//m_animation.playReverse();
+		m_animation.playReverse();
 	}
 }
 
