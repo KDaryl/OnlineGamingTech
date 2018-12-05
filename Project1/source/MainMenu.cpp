@@ -2,9 +2,9 @@
 
 MainMenuScene::MainMenuScene()
 {
-	m_buttons["Play Button"] = Button();
-	//m_buttons["Options Button"] = Button();
-	//m_buttons["Exit Button"] = Button();
+	m_buttons["Play Button"] = new Button(370, 122.5);
+	m_buttons["Options Button"] = new Button(370, 322.5);
+	m_buttons["Exit Button"] = new Button(370, 522.5);
 }
 
 MainMenuScene::~MainMenuScene()
@@ -13,13 +13,11 @@ MainMenuScene::~MainMenuScene()
 
 void MainMenuScene::update()
 {
-	//std::cout << "Ticks this frame: " << m_timer.getTicks() << std::endl;
-
 	//Update our buttons
 	for (auto& pair : m_buttons)
 	{
 		//Pass in the ticks sinc ethe timer was restarted
-		pair.second.update(m_timer.getTicks());
+		pair.second->update(m_timer.getTicks());
 	}
 
 	//Restart the timer here
@@ -31,7 +29,7 @@ void MainMenuScene::draw(SDL_Renderer * renderer)
 	//Draw our buttons
 	for (auto& pair : m_buttons)
 	{
-		pair.second.draw(renderer);
+		pair.second->draw(renderer);
 	}
 }
 
@@ -41,11 +39,11 @@ std::string MainMenuScene::handleInput(InputHandler & input, std::string current
 
 	if (input.isButtonPressed("LEFT_MOUSE"))
 	{
-		if (m_buttons["Play Button"].clicked(input))
+		if (m_buttons["Play Button"]->clicked(input))
 			newScene = "Game Scene";
-		if (m_buttons["Exit Button"].clicked(input))
+		if (m_buttons["Exit Button"]->clicked(input))
 			newScene = "Exit Game";
-		if (m_buttons["Options Button"].clicked(input))
+		if (m_buttons["Options Button"]->clicked(input))
 			newScene = "Options Scene";
 	}
 	else
@@ -53,7 +51,7 @@ std::string MainMenuScene::handleInput(InputHandler & input, std::string current
 		//Check for highlight on each of our buttons
 		for (auto& btn : m_buttons)
 		{
-			btn.second.checkHighlight(input);
+			btn.second->checkHighlight(input);
 		}
 	}
 
@@ -62,7 +60,7 @@ std::string MainMenuScene::handleInput(InputHandler & input, std::string current
 
 void MainMenuScene::setTexture(ResourceHandler & resources)
 {
-	m_buttons["Play Button"].setTexture(resources, "Join Game Button");
-	m_buttons["Options Button"].setTexture(resources, "Options Button");
-	m_buttons["Exit Button"].setTexture(resources, "Exit Game Button");
+	m_buttons["Play Button"]->setTexture(resources, "Join Game Button");
+	m_buttons["Options Button"]->setTexture(resources, "Options Button");
+	m_buttons["Exit Button"]->setTexture(resources, "Exit Game Button");
 }

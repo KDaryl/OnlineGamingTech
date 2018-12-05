@@ -15,6 +15,6 @@ public:
 	std::string handleInput(InputHandler& input, std::string currentScene);
 	void setTexture(ResourceHandler& resources);
 private:
-	std::map<std::string, Button> m_buttons;
+	std::map<std::string, Button*> m_buttons;
 	Timer m_timer;
 };

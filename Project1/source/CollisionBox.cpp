@@ -23,8 +23,10 @@ CollisionBox::~CollisionBox()
 bool CollisionBox::intersects(CollisionBox & other)
 {
 	//Checks for rectangular collision
-	if (m_x < other.w() && m_w > other.x() &&
-		m_y < other.h() && other.h() > m_y)
+	if (m_x < other.x() + other.w() &&
+		m_x + m_w > other.x() &&
+		m_y < other.y() + other.h() &&
+		m_h + m_y > other.y())
 		return true;
 	return false;
 }

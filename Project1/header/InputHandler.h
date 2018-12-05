@@ -29,6 +29,7 @@ private:
 	Input m_current;
 	Input m_previous;
 	const Uint8* m_keyStates;
+	Uint32 m_mouseState;
 	CollisionBox m_mouseCollider;
 };
 

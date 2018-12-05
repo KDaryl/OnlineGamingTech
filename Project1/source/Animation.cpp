@@ -45,7 +45,6 @@ void Animation::update(int dt)
 				m_currentRect--;
 				m_ticksGone = 0;
 				m_animFinished = true;
-				std::cout << "Animation done!" << std::endl;
 			}
 
 			//Set sprite texture

@@ -29,10 +29,10 @@ void InputHandler::update()
 
 	m_previous = m_current; //Set our previous
 
-	//Get mouse position
-	SDL_GetMouseState(&m_mousePos.first, &m_mousePos.second);
-
-	//Set mouse collider position
+	//Get mouse position and state
+	m_mouseState = SDL_GetMouseState(&m_mousePos.first, &m_mousePos.second);
+		 
+ 	//Set mouse collider position
 	m_mouseCollider.setPosition(m_mousePos.first, m_mousePos.second);
 
 	//Check if the keys are currently down
@@ -40,7 +40,7 @@ void InputHandler::update()
 	m_current["A"] = m_keyStates[SDL_SCANCODE_A];
 	m_current["S"] = m_keyStates[SDL_SCANCODE_S];
 	m_current["D"] = m_keyStates[SDL_SCANCODE_D];
-	m_current["Mouse_LEFT"] = SDL_BUTTON(SDL_BUTTON_LEFT); //Get left mouse click 
+	m_current["LEFT_MOUSE"] = m_mouseState == SDL_BUTTON(SDL_BUTTON_LEFT); //Get left mouse click 
 }
 
 void InputHandler::checkKey(std::string key, SDL_Keycode code)

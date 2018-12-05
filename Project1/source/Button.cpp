@@ -1,11 +1,12 @@
 #include "Button.h"
 
-Button::Button() :
+Button::Button(int x, int y) :
 	m_animation(true, false, .15f),
-	m_collider(0,0, 540, 75)
+	m_collider(x, y, 540, 75)
 {
 	m_animation.createRectangles(15, 540, 8100, 75);
-	m_sprite.setTextureRect(0, 0, 540, 75);
+	m_sprite.setTextureRect(0, 0, 540, 75); //Set the texture rect
+	m_sprite.setPosition(x, y); //Set the position of the button
 }
 
 Button::~Button()
