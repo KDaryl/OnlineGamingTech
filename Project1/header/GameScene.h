@@ -13,7 +13,6 @@ public:
 	void draw(SDL_Renderer* renderer);
 	std::string handleInput(InputHandler& input, std::string currentScene);
 	void setTexture(ResourceHandler& resources);
-	void setAsHost(bool aBool);
 private:
 	Player m_player; //Local player
 	std::vector<Player> m_otherPlayers; //The other players that will be in the game

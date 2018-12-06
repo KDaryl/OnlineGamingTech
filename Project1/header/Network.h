@@ -15,7 +15,7 @@ class Server
 {
 public:
 	Server() {}
-	Server(const char* ip, int PORT, bool BroadcastPublically = false);
+	Server(std::string IP, int PORT, bool BroadcastPublically = false);
 	bool ListenForNewConnection();
 
 	int totalConnections() { return TotalConnections; }

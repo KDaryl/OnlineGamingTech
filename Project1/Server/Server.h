@@ -41,6 +41,7 @@ private:
 private:
 	SOCKET Connections[100];
 	int TotalConnections = 0;
+	int hostNumber = 0;
 	
 	SOCKADDR_IN addr; //Address that we will bind our listening socket to
 	int addrlen = sizeof(addr);

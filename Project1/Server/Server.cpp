@@ -51,24 +51,13 @@ bool Server::ListenForNewConnection()
 		SendString(TotalConnections, MOTD);
 		TotalConnections += 1; //Incremenent total # of clients that have connected
 
-		//If 3 people have joined then set one of them as the host
-		if (TotalConnections == 3)
+		//If 2 people have joined then set one of them as the authorative host
+		if (TotalConnections == 2)
 		{
 			//Get random index for the host, no deciding factors for now
-			int host = randInt(0, 2);
+			hostNumber = randInt(0, 1);
 			std::string msg = "You are the host";
-			SendString(host, msg);
-			Sleep(125); //Wait for the host to setup itself as the server then send the connetc message
-			
-			//Send waiting to connect message to everyone else
-			msg = "Waiting to connect...";
-			for (int i = 0; i < 3; i++)
-			{
-				if (i != host)
-				{
-					SendString(i, msg);
-				}
-			}
+			SendString(hostNumber, msg);
 		}
 		return true;
 	}

@@ -47,7 +47,6 @@ private:
 	bool m_setupHostServer;
 	bool m_everyoneConnected;
 	bool m_clickedJoin;
-	bool m_joinedPlayer;
 	bool m_startGame, m_gameHasStarted;
 	bool m_isHost;
 	Client m_serverConnection;
