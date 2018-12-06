@@ -32,12 +32,12 @@ void SceneManager::draw(SDL_Renderer* renderer)
 	}
 }
 
-void SceneManager::handleInput(InputHandler & input)
+std::string SceneManager::handleInput(InputHandler & input)
 {
 	//If nullptr is nopt equal to current then handle input
 	if (nullptr != m_current.second)
 	{
-		m_current.second->handleInput(input, m_current.first);
+		return m_current.second->handleInput(input, m_current.first);
 	}
 }
 

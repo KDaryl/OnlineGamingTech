@@ -11,6 +11,10 @@ MainMenuScene::~MainMenuScene()
 {
 }
 
+void MainMenuScene::init(bool isHostBool)
+{
+}
+
 void MainMenuScene::update()
 {
 	//Update our buttons
@@ -40,7 +44,7 @@ std::string MainMenuScene::handleInput(InputHandler & input, std::string current
 	if (input.isButtonPressed("LEFT_MOUSE"))
 	{
 		if (m_buttons["Play Button"]->clicked(input))
-			newScene = "Game Scene";
+			newScene = "Join Game";
 		if (m_buttons["Exit Button"]->clicked(input))
 			newScene = "Exit Game";
 		if (m_buttons["Options Button"]->clicked(input))

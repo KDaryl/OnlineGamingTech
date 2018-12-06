@@ -51,24 +51,25 @@ bool Server::ListenForNewConnection()
 		SendString(TotalConnections, MOTD);
 		TotalConnections += 1; //Incremenent total # of clients that have connected
 
-		//If 2 people have joined then set one of them as the host
-		if (TotalConnections == 2)
+		//If 3 people have joined then set one of them as the host
+		if (TotalConnections == 3)
 		{
-			//Send message to let them know we are attempting to set a host
-			std::string msg = "Migrating host";
-			SendString(0, msg);
-			SendString(1, msg);
-
-			//****Randomly pick a host
-			//Select connection at ID 1 as the host
-			msg = "You are the host";
-			SendString(1, msg);
-			Sleep(100); //Wait for the host to setup itself as the server
-			//Tell ID 0 to connect to 1
-			msg = "Connect to";
-			SendString(0, msg);
+			//Get random index for the host, no deciding factors for now
+			int host = randInt(0, 2);
+			std::string msg = "You are the host";
+			SendString(host, msg);
+			Sleep(125); //Wait for the host to setup itself as the server then send the connetc message
+			
+			//Send waiting to connect message to everyone else
+			msg = "Waiting to connect...";
+			for (int i = 0; i < 3; i++)
+			{
+				if (i != host)
+				{
+					SendString(i, msg);
+				}
+			}
 		}
-
 		return true;
 	}
 }
@@ -119,4 +120,13 @@ void Server::ClientHandlerThread(int ID) //ID = the index in the SOCKET Connecti
 	std::cout << "Lost connection to client ID: " << ID << std::endl;
 	closesocket(serverptr->Connections[ID]);
 	return;
+}
+
+int Server::randInt(int min, int max)
+{
+	std::random_device rd;  //Will be used to obtain a seed for the random number engine
+	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+	std::uniform_int_distribution<> dis(min, max); //Ste min and max values fo rrandom number
+	//Return a random value between min and max
+	return dis(gen);
 }

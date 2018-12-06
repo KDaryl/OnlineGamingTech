@@ -40,6 +40,7 @@ void InputHandler::update()
 	m_current["A"] = m_keyStates[SDL_SCANCODE_A];
 	m_current["S"] = m_keyStates[SDL_SCANCODE_S];
 	m_current["D"] = m_keyStates[SDL_SCANCODE_D];
+	m_current["C"] = m_keyStates[SDL_SCANCODE_C];
 	m_current["LEFT_MOUSE"] = m_mouseState == SDL_BUTTON(SDL_BUTTON_LEFT); //Get left mouse click 
 }
 

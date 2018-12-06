@@ -8,6 +8,11 @@ GameScene::~GameScene()
 {
 }
 
+void GameScene::init(bool isHostBool)
+{
+	m_isHost = isHostBool;
+}
+
 void GameScene::update()
 {
 	//Update the player

@@ -3,6 +3,7 @@
 #pragma comment(lib,"ws2_32.lib")
 #include <WinSock2.h>
 #include <string>
+#include <random>
 #include <iostream>
 
 enum Packet
@@ -33,6 +34,9 @@ private:
 	bool ProcessPacket(int ID, Packet _packettype);
 
 	static void ClientHandlerThread(int ID);
+
+	//Generates a random integer value
+	int randInt(int min, int max);
 
 private:
 	SOCKET Connections[100];

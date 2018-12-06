@@ -12,10 +12,12 @@ public:
 
 	void update();
 	void draw(SDL_Renderer* renderer);
-	void handleInput(InputHandler& input);
+	std::string handleInput(InputHandler& input);
 
 	void setCurrent(std::string sceneName);
 	void setTexture(ResourceHandler& resources);
+	Scene* getScene(std::string sceneName) { return m_scenes[sceneName]; }
+	GameScene& getGameSene() { return m_gameScene; }
 private:
 	typedef std::pair<std::string, Scene*> MTuple; //A tuple for handling the current scene 
 

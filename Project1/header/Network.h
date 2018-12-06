@@ -14,9 +14,11 @@ enum Packet
 class Server
 {
 public:
-	Server(int PORT, bool BroadcastPublically = false);
+	Server() {}
+	Server(const char* ip, int PORT, bool BroadcastPublically = false);
 	bool ListenForNewConnection();
 
+	int totalConnections() { return TotalConnections; }
 private:
 	bool sendall(SOCKET& socket, char * data, int totalbytes);
 	bool recvall(SOCKET& socket, char * data, int totalbytes);
@@ -48,13 +50,16 @@ class Client
 public: //Public functions
 	Client(std::string IP, int PORT);
 	bool ConnectToServer();
-	bool ConnectToPlayer(); //Connect to player (P2P)
 
-	//Will listen for anothe rplayer connection
+	//Will listen for another player connection
 	bool ListenForNewConnection();
 
 	bool SendString(std::string & _string);
 	bool CloseConnection();
+
+	//Bool to get wheter we are the host or not
+	bool selectedAsHost() { return isHost; }
+	bool connectToPlayer() {return m_connectToPlayer; }
 private: //Private functions
 	bool ProcessPacket(Packet _packettype);
 	static void ClientThread();
@@ -78,6 +83,7 @@ private:
 	int sizeOfSAddr = sizeof(sAddr);
 	bool playerconnected;
 	bool isHost;
+	bool m_connectToPlayer;
 	SOCKET serverConnection, sListen;
 };
 

@@ -66,10 +66,10 @@
     <ClCompile Include="source\InputHandler.cpp">
       <Filter>Source Files\Helper Source</Filter>
     </ClCompile>
-    <ClCompile Include="source\Button.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\Animation.cpp">
+      <Filter>Source Files\Helper Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Button.cpp">
       <Filter>Source Files\Helper Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -110,10 +110,10 @@
     <ClInclude Include="header\InputHandler.h">
       <Filter>Header Files\Helper Headers</Filter>
     </ClInclude>
-    <ClInclude Include="header\Button.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="header\Animation.h">
+      <Filter>Header Files\Helper Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Button.h">
       <Filter>Header Files\Helper Headers</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #include "Network.h"
 
-Server::Server(int PORT, bool BroadcastPublically) //Port = port to broadcast on. BroadcastPublically = false if server is not open to the public (people outside of your router), true = server is open to everyone (assumes that the port is properly forwarded on router settings)
+Server::Server(const char* ip, int PORT, bool BroadcastPublically) //Port = port to broadcast on. BroadcastPublically = false if server is not open to the public (people outside of your router), true = server is open to everyone (assumes that the port is properly forwarded on router settings)
 {
 	//Winsock Startup
 	WSAData wsaData;
@@ -14,7 +14,7 @@ Server::Server(int PORT, bool BroadcastPublically) //Port = port to broadcast on
 	if (BroadcastPublically) //If server is open to public
 		addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	else //If server is only for our router
-		addr.sin_addr.s_addr = inet_addr("127.0.0.1"); //Broadcast locally
+		addr.sin_addr.s_addr = inet_addr(ip); //Broadcast locally
 	addr.sin_port = htons(PORT); //Port
 	addr.sin_family = AF_INET; //IPv4 Socket
 

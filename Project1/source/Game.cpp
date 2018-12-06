@@ -5,6 +5,11 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 	m_gScreenSurface(NULL),
 	m_quitGame(false),
 	m_gameCreated(true),
+	m_setupHostServer(false),
+	m_connectedToServer(false),
+	m_everyoneConnected(false),
+	m_clickedJoin(false),
+	m_startGame(false),
 	m_frameRate(FPS),
 	m_msPerFrame(0),
 	m_resources("images/"),
@@ -114,19 +119,90 @@ void Game::processEvents(SDL_Event & e)
 	}
 }
 
+void Game::setupAsHost()
+{
+	if (m_setupHostServer == false)
+	{
+		std::string ip = std::string("127.0.0.2");
+		const char *ip_c = ip.c_str();
+		//Create server on port 155
+		m_clientHostServer = Server(ip_c, 155);
+		//Send connect message to server
+		std::string msg = "Connect to 155";
+		m_serverConnection.SendString(msg); //Send the string
+		m_setupHostServer = true; //Set our bool to true
+		m_isHost = true; //Set us as the host
+	}
+
+	//If two other people have not joined yet, wait for them
+	if (m_clientHostServer.totalConnections() != 2)
+	{
+		//Wait for two connections
+		for (int i = 0; i < 2; i++)
+		{
+			//Listen for new Connection
+			m_clientHostServer.ListenForNewConnection();
+		}
+	}
+
+	if (m_everyoneConnected == false && m_clientHostServer.totalConnections() == 2)
+	{
+		//Send start game message
+		std::string msg = "Start Game";
+		m_serverConnection.SendString(msg);
+		//Close connection to the server
+		m_serverConnection.CloseConnection();
+		m_everyoneConnected = true; //Set our boolean
+	}
+}
+
+void Game::connectToPlayer()
+{
+	if (m_joinedPlayer == false)
+	{
+		m_serverConnection.CloseConnection(); //Close the connection
+		m_serverConnection = Client("127.0.0.2", 155);
+
+		//Try connect to our server, if it fails output the error
+		if (!m_serverConnection.ConnectToServer())
+		{
+			std::cout << "Could not connect to central server" << std::endl;
+		}
+		//Else say we connected and set our boolean
+		else
+		{
+			m_joinedPlayer = true; //Set our bool
+			std::string msg = "Connected to player"; //Send our message
+			m_serverConnection.SendString(msg);
+		}
+	}
+}
+
 void Game::update()
 {
-	//Update the input handler
-	m_input.update(); 
+	//If we are selected as the host, setup our server
+	if (m_serverConnection.selectedAsHost())
+		setupAsHost();
+	if (m_serverConnection.connectToPlayer())
+		connectToPlayer();
 
-	//Handle input in our scene manager
-	m_sceneManager.handleInput(m_input);
+	//if everyone is connected or startGame is true, then get the host to decided on
+	//player colours and starting positions and send them to everyone
+	if ((m_everyoneConnected || m_startGame) && m_gameHasStarted == false)
+	{
+		//Set the host variable in the game scene
+		m_sceneManager.getGameSene().init(m_isHost);
+		m_gameHasStarted = true; //Set game started to true
+	}
+
+	//Handle input
+	handleInput();
 
 	//Update Our sceneManager
 	m_sceneManager.update();
 
 	//Dont delete, this is currently not reachable but will be used for future reference
-	if (!m_connectedToServer && m_input.isButtonPressed("C"))
+	if (!m_connectedToServer && m_clickedJoin)
 	{
 
 		//Try connect to our server, if it fails output the error
@@ -141,6 +217,21 @@ void Game::update()
 			std::cout << "Connected" << std::endl;
 		}
 	}
+}
+
+void Game::handleInput()
+{
+	//Update the input handler
+	m_input.update();
+
+	//Handle input in our scene manager and get the return action
+	std::string action = m_sceneManager.handleInput(m_input);
+
+	//Handle actions returned
+	if (action == "Join Game")
+		m_clickedJoin = true;
+	else if (action == "Exit Game")
+		m_quitGame = true;
 }
 
 void Game::draw()

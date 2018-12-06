@@ -11,10 +11,17 @@ bool Client::ProcessPacket(Packet _packettype)
 			return false; //If we do not properly get the chat message, return false
 		std::cout << Message << std::endl; //Display the message to the user
 
-		//If string is choosing host, 
-		if (Message == "Migrating host")
+		//If I have been chosen as the host then set myself up as a server and send
+		//my Ip and port to the server to tell everyone to connect to me
+		if (Message == "You are the host")
 		{
-
+			//Set us as the host
+			isHost = true;
+		}
+		//Else if we have recieved a message to connect to port 155, then disconnect from server, and connect to new one
+		else if (Message == "Connect to 155")
+		{
+			m_connectToPlayer = true;
 		}
 
 		break;
@@ -79,12 +86,7 @@ bool Client::ConnectToServer()
 	return true;
 }
 
-bool Client::ConnectToPlayer()
-{
-	return false;
-}
-
-//Closes the connectuiion to the SERVER
+//Closes the connection to the SERVER
 bool Client::CloseConnection()
 {
 	if (closesocket(serverConnection) == SOCKET_ERROR)
@@ -165,16 +167,7 @@ bool Client::ListenForNewConnection()
 		std::cout << "Client Connected! ID:" << TotalConnections << std::endl;
 		Connections[TotalConnections] = newConnection; //Set socket in array to be the newest connection before creating the thread to handle this client's socket.
 		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientThread, (LPVOID)(TotalConnections), NULL, NULL); //Create Thread to handle this client. The index in the socket array for this thread is the value (i).
-		std::string MOTD = "MOTD: Welcome! This is the message of the day!.";
 		TotalConnections += 1; //Incremenent total # of clients that have connected
-
-		//If 2 people have joined then set one of them as the host
-		if (TotalConnections == 2)
-		{
-			//Send message to let them know we are attempting to set a host
-			std::string msg = "Migrating host";
-		}
-
 		return true;
 	}
 }
