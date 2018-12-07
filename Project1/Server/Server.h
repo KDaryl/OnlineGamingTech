@@ -4,7 +4,12 @@
 #include <WinSock2.h>
 #include <string>
 #include <random>
+#include <map>
+#include <vector>
 #include <iostream>
+
+typedef std::pair<SOCKET, bool> sPair; //Our pair of sockets and bools
+typedef std::pair<SOCKET*, SOCKET*> gamePair; //Our pair of sockets for games, first is host, second is other
 
 enum Packet
 {
@@ -19,30 +24,33 @@ public:
 	bool ListenForNewConnection();
 
 private:
-	bool sendall(int ID, char * data, int totalbytes);
-	bool recvall(int ID, char * data, int totalbytes);
+	bool sendall(SOCKET* ID, char * data, int totalbytes);
+	bool recvall(SOCKET* ID, char * data, int totalbytes);
 
-	bool SendInt(int ID, int _int);
-	bool GetInt(int ID, int & _int);
+	bool SendInt(SOCKET* ID, int _int);
+	bool GetInt(SOCKET* ID, int & _int);
 
-	bool SendPacketType(int ID, Packet _packettype);
-	bool GetPacketType(int ID, Packet & _packettype);
+	bool SendPacketType(SOCKET* ID, Packet _packettype);
+	bool GetPacketType(SOCKET* ID, Packet & _packettype);
 
-	bool SendString(int ID, std::string & _string);
-	bool GetString(int ID, std::string & _string);
+	bool SendString(SOCKET* ID, std::string & _string);
+	bool GetString(SOCKET* ID, std::string & _string);
 
-	bool ProcessPacket(int ID, Packet _packettype);
+	bool ProcessPacket(SOCKET* ID, Packet _packettype);
 
-	static void ClientHandlerThread(int ID);
+	sPair findSocketPair(const SOCKET* ID);
+
+	static void ClientHandlerThread(SOCKET* ID);
 
 	//Generates a random integer value
 	int randInt(int min, int max);
 
 private:
-	SOCKET Connections[100];
-	int TotalConnections = 0;
-	int hostNumber = 0;
-	
+
+	//Our map of connections, with a bool to show if they are in a game or not
+	std::vector<sPair> Connections;
+	std::map<SOCKET, SOCKET> Games; //The games being played
+
 	SOCKADDR_IN addr; //Address that we will bind our listening socket to
 	int addrlen = sizeof(addr);
 	SOCKET sListen;

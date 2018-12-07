@@ -5,9 +5,7 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 	m_gScreenSurface(NULL),
 	m_quitGame(false),
 	m_gameCreated(true),
-	m_setupHostServer(false),
 	m_connectedToServer(false),
-	m_everyoneConnected(false),
 	m_clickedJoin(false),
 	m_startGame(false),
 	m_frameRate(FPS),
@@ -119,23 +117,26 @@ void Game::processEvents(SDL_Event & e)
 	}
 }
 
+
 void Game::update()
 {
-	//If we are selected as the host, setup our server
-	if (m_serverConnection.selectedAsHost())
-		setupAsHost();
-	if (m_serverConnection.connectToPlayer())
-		connectToPlayer();
-
-	//set player colours and starting positions and send them to the other player
-	if (m_startGame && m_gameHasStarted == false)
+	if (m_serverConnection.lostConnecion())
 	{
-		//Set the host variable in the game scene
-		m_sceneManager.getGameSene().init(m_isHost);
-		m_gameHasStarted = true; //Set game started to true
-		m_sceneManager.setCurrent("Game Scene");
+		m_connectedToServer = false;
 	}
 
+	if (m_gameHasStarted == false)
+	{
+		//Set start game true for thehost so the host can setup game parameters
+		if (m_serverConnection.selectedAsHost())
+
+		//set player colours and starting positions and send them to the other player
+		if (m_startGame)
+		{
+			m_gameHasStarted = true; //Set game started to true
+			m_sceneManager.setCurrent("Game Scene");
+		}
+	}
 	//Handle input
 	handleInput();
 
@@ -154,6 +155,7 @@ void Game::update()
 		//Else say we connected and set our boolean
 		else
 		{
+			m_clickedJoin = false;
 			m_connectedToServer = true;
 			std::cout << "Connected" << std::endl;
 		}

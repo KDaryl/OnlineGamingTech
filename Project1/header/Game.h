@@ -15,8 +15,6 @@ public:
 	~Game() {};
 	void run(); //Here is where are game loop will be
 	void processEvents(SDL_Event& e); //Process Game events
-	void setupAsHost();
-	void connectToPlayer();
 	void update(); //Where we will update the game
 	void handleInput(); //Where we will update and handle input
 	void draw(); //Where we will draw the game
@@ -44,11 +42,8 @@ private:
 	 
 	//Temp variables for connection test
 	bool m_connectedToServer;
-	bool m_setupHostServer;
-	bool m_everyoneConnected;
 	bool m_clickedJoin;
 	bool m_startGame, m_gameHasStarted;
-	bool m_isHost;
 	Client m_serverConnection;
 	Server m_clientHostServer;
 };

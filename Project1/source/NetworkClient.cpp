@@ -18,11 +18,6 @@ bool Client::ProcessPacket(Packet _packettype)
 			//Set us as the host
 			isHost = true;
 		}
-		//Else if we have recieved a message to connect to port 155, then disconnect from server, and connect to new one
-		else if (Message == "Connect to 155")
-		{
-			m_connectToPlayer = true;
-		}
 
 		break;
 	}
@@ -68,7 +63,7 @@ Client::Client(std::string IP, int PORT)
 	addr.sin_addr.s_addr = inet_addr(IP.c_str()); //Address (127.0.0.1) = localhost (this pc)
 	addr.sin_port = htons(PORT); //Port 
 	addr.sin_family = AF_INET; //IPv4 Socket
-	playerconnected = false;
+	lostConnection = false;
 	clientptr = this; //Update ptr to the client which will be used by our client thread
 }
 
@@ -82,6 +77,7 @@ bool Client::ConnectToServer()
 	}
 
 	std::cout << "Connected!" << std::endl;
+	lostConnection = false; //Set to false as we are now connected again
 	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientThread, NULL, NULL, NULL); //Create the client thread that will receive any data that the server sends.
 	return true;
 }
@@ -89,6 +85,7 @@ bool Client::ConnectToServer()
 //Closes the connection to the SERVER
 bool Client::CloseConnection()
 {
+	lostConnection = true; //Set our lost connection bool to true
 	if (closesocket(serverConnection) == SOCKET_ERROR)
 	{
 		if (WSAGetLastError() == WSAENOTSOCK) //If socket error is that operation is not performed on a socket (This happens when the socket has already been closed)

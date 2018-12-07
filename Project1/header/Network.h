@@ -59,7 +59,8 @@ public: //Public functions
 
 	//Bool to get wheter we are the host or not
 	bool selectedAsHost() { return isHost; }
-	bool connectToPlayer() {return m_connectToPlayer; }
+	bool startGame() {return startTheGame; }
+	bool lostConnecion() { return lostConnection; }
 private: //Private functions
 	bool ProcessPacket(Packet _packettype);
 	static void ClientThread();
@@ -81,9 +82,9 @@ private:
 	SOCKADDR_IN addr, sAddr; //Address to be binded to our Connection socket, and our server listen socket
 	int sizeofaddr = sizeof(addr); //Need sizeofaddr for the connect function
 	int sizeOfSAddr = sizeof(sAddr);
-	bool playerconnected;
+	bool startTheGame;
 	bool isHost;
-	bool m_connectToPlayer;
+	bool lostConnection;
 	SOCKET serverConnection, sListen;
 };
 

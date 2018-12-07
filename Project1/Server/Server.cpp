@@ -44,26 +44,57 @@ bool Server::ListenForNewConnection()
 	}
 	else //If client connection properly accepted
 	{
-		std::cout << "Client Connected! ID:" << TotalConnections << std::endl;
-		Connections[TotalConnections] = newConnection; //Set socket in array to be the newest connection before creating the thread to handle this client's socket.
-		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientHandlerThread, (LPVOID)(TotalConnections), NULL, NULL); //Create Thread to handle this client. The index in the socket array for this thread is the value (i).
-		std::string MOTD = "MOTD: Welcome! This is the message of the day!.";
-		SendString(TotalConnections, MOTD);
-		TotalConnections += 1; //Incremenent total # of clients that have connected
+		std::cout << "Client Connected!" << Connections.size() + 1 << std::endl;
+		Connections.push_back(sPair(newConnection, false)); //Set socket in array to be the newest connection before creating the thread to handle this client's socket.
+		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientHandlerThread, (LPVOID)(&Connections.at(Connections.size()-1).first), NULL, NULL); //Create Thread to handle this client. The index in the socket array for this thread is the value (i).
 
-		//If 2 people have joined then set one of them as the authorative host
-		if (TotalConnections == 2)
+		//If there are enough players to fill a game (modulo two to make sure there is a pair)
+		if (Connections.size() % 2 == 0)
 		{
-			//Get random index for the host, no deciding factors for now
-			hostNumber = randInt(0, 1);
-			std::string msg = "You are the host";
-			SendString(hostNumber, msg);
+			gamePair gamePair; //Our pair
+			//Loop through our connections
+			//Somewhere we will have to unset the bools we set here and 
+			//remove the game from our variable
+			for (auto& pair : Connections)
+			{
+				if (nullptr == gamePair.first)
+				{
+					if (pair.second == false)
+					{
+						//Set the host
+						gamePair.first = &pair.first;
+						pair.second = true; //Set in game to true
+					}
+				}
+				else if (nullptr == gamePair.second)
+				{
+					if (pair.second == false && (*gamePair.first != pair.first))
+					{
+						//Set the other player
+						gamePair.second = &pair.first;
+						pair.second = true; //Set in game to true
+					}
+				}
+				else
+					break; //Break out if we have our pair
+			}
+			
+			if (nullptr != gamePair.first && nullptr != gamePair.second)
+			{
+				//Add the game to our vector of games being played
+				Games[*gamePair.first] = *gamePair.second;
+
+				std::string msg = "You are the Host";
+				SendString(gamePair.first, msg); //Send you are the host msg to the host selected
+
+				std::cout << "Game created" << std::endl;
+			}
 		}
 		return true;
 	}
 }
 
-bool Server::ProcessPacket(int ID, Packet _packettype)
+bool Server::ProcessPacket(SOCKET* ID, Packet _packettype)
 {
 	switch (_packettype)
 	{
@@ -73,13 +104,13 @@ bool Server::ProcessPacket(int ID, Packet _packettype)
 		if (!GetString(ID, Message)) //Get the chat message and store it in variable: Message
 			return false; //If we do not properly get the chat message, return false
 		//Next we need to send the message out to each user -> this needs to not send anything
-		for (int i = 0; i < TotalConnections; i++)
+		for (auto& pair : Connections)
 		{
-			if (i == ID) //If connection is the user who sent the message...
+			if (pair.first == *ID) //If connection is the user who sent the message...
 				continue;//Skip to the next user since there is no purpose in sending the message back to the user who sent it.
-			if (!SendString(i, Message)) //Send message to connection at index i, if message fails to be sent...
+			if (!SendString(&pair.first, Message)) //Send message to connection at index i, if message fails to be sent...
 			{
-				std::cout << "Failed to send message from client ID: " << ID << " to client ID: " << i << std::endl;
+				std::cout << "Failed to send message from a client to another" << std::endl;
 			}
 		}
 		std::cout << "Processed chat message packet from user ID: " << ID << std::endl;
@@ -95,9 +126,51 @@ bool Server::ProcessPacket(int ID, Packet _packettype)
 	return true;
 }
 
-//After we create a thread this is where the thread will run and process the connection with the passed over ID
-void Server::ClientHandlerThread(int ID) //ID = the index in the SOCKET Connections array
+sPair Server::findSocketPair(const SOCKET * ID)
 {
+	//The pair we want to find
+	sPair foundConnection;
+	for (auto& pair : serverptr->Connections)
+	{
+		//If the socket in that pair is equal to our socket that sbeing handled here in this thread
+		if (pair.first == *ID)
+		{
+			//Set our pair as found
+			foundConnection = pair;
+			break;
+		}
+	}
+
+	//Return the found pair
+	return foundConnection;
+}
+
+//After we create a thread this is where the thread will run and process the connection with the passed over ID
+void Server::ClientHandlerThread(SOCKET* ID) //ID = the index in the SOCKET Connections array
+{
+	const SOCKET* host = nullptr;
+	SOCKET* other;
+	//If player was in a game, remove them from the map
+	for (auto& pair : serverptr->Games)
+	{
+		if (pair.first == *ID)
+		{
+			host = &pair.first;
+			other = &pair.second;
+			auto otherPlayer = serverptr->findSocketPair(&pair.second);
+			otherPlayer.second = false;
+			break;
+		}
+		else if (pair.second == *ID)
+		{
+			host = &pair.first;
+			other = &pair.second;
+			auto otherPlayer = serverptr->findSocketPair(&pair.first);
+			otherPlayer.second = false;
+			break;
+		}
+	}
+
 	Packet PacketType;
 	while (true)
 	{
@@ -107,7 +180,23 @@ void Server::ClientHandlerThread(int ID) //ID = the index in the SOCKET Connecti
 			break; //If there is an issue processing the packet, exit this loop
 	}
 	std::cout << "Lost connection to client ID: " << ID << std::endl;
-	closesocket(serverptr->Connections[ID]);
+
+	//The pair we want to find
+	auto foundConnection = serverptr->findSocketPair(ID);
+	//get the iterator that points to our socket
+	auto pos = std::find(serverptr->Connections.begin(), serverptr->Connections.end(), foundConnection);
+	//Get the index of that iterator
+	auto index = std::distance(serverptr->Connections.begin(), pos) - 1;
+
+
+	//if this player was part of a game, delete the game for the vector
+	if(nullptr != host)
+		serverptr->Games.erase(*host);
+
+	//Close the socket
+	closesocket(serverptr->Connections.at(index).first);
+	//Remove socket from our vector of connections
+	serverptr->Connections.erase(pos);
 	return;
 }
 
@@ -115,7 +204,7 @@ int Server::randInt(int min, int max)
 {
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-	std::uniform_int_distribution<> dis(min, max); //Ste min and max values fo rrandom number
+	std::uniform_int_distribution<> dis(min, max); //Ste min and max values for random number
 	//Return a random value between min and max
 	return dis(gen);
 }
