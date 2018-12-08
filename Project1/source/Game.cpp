@@ -60,6 +60,8 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 				//Set all the textures for the game as appropriate
 				m_sceneManager.setTexture(m_resources);
 
+				m_sceneManager.setCurrent("Game Scene");
+
 				//Set connected to server to false
 				m_connectedToServer = false;
 			}
@@ -71,9 +73,16 @@ void Game::run()
 {
 	if (m_gameCreated)
 	{
+		Uint64 NOW = SDL_GetPerformanceCounter();
+		Uint64 LAST = 0;
+		double deltaTime = 0;
+
+
 		//Create our timer
-		Timer timer;
-		int lag = 0; //Lag will determine if we need to catch up with updates
+		//Timer timer;
+		//Start our timer
+		//timer.start();
+		//int lag = 0; //Lag will determine if we need to catch up with updates
 
 		//Event handler
 		SDL_Event e;
@@ -81,21 +90,24 @@ void Game::run()
 		//While we are not quiting
 		while (!m_quitGame)
 		{
-			//Start our timer
-			timer.start();
-			lag += timer.getTicks(); //Get the time gone since we last restarted
+			LAST = NOW;
+			NOW = SDL_GetPerformanceCounter();
+
+			//Calculate DT
+			deltaTime = (double)((NOW - LAST) * 1000 / (double)SDL_GetPerformanceFrequency());
 
 			//Process any events
 			processEvents(e);
 
-			//If we are lagging behind our target framerate then let sdo some extra updates
-			if (lag > m_msPerFrame)
+			//If we are lagging behind our target framerate then lets do some extra updates
+			if (deltaTime >= m_msPerFrame)
 			{
-				update();
-				lag -= m_msPerFrame;
+				update(deltaTime);
+				deltaTime -= m_msPerFrame;
 			}
-			update();
+			update(deltaTime);
 			draw();
+
 		}
 	}
 
@@ -118,7 +130,7 @@ void Game::processEvents(SDL_Event & e)
 }
 
 
-void Game::update()
+void Game::update(double dt)
 {
 	if (m_serverConnection.lostConnecion())
 	{
@@ -129,6 +141,10 @@ void Game::update()
 	{
 		//Set start game true for thehost so the host can setup game parameters
 		if (m_serverConnection.selectedAsHost())
+		{
+			//Setup game parameters and send them to the other player and then start the game
+			setUpGame();
+		}
 
 		//set player colours and starting positions and send them to the other player
 		if (m_startGame)
@@ -137,13 +153,14 @@ void Game::update()
 			m_sceneManager.setCurrent("Game Scene");
 		}
 	}
+
 	//Handle input
 	handleInput();
 
 	//Update Our sceneManager
-	m_sceneManager.update();
+	m_sceneManager.update(dt);
 
-	//Dont delete, this is currently not reachable but will be used for future reference
+	//For joining the server
 	if (!m_connectedToServer && m_clickedJoin)
 	{
 
@@ -155,11 +172,19 @@ void Game::update()
 		//Else say we connected and set our boolean
 		else
 		{
-			m_clickedJoin = false;
 			m_connectedToServer = true;
 			std::cout << "Connected" << std::endl;
 		}
+
+		m_clickedJoin = false;
 	}
+}
+
+void Game::setUpGame()
+{
+	int hostColourIndex = randInt(0, 3);
+	int hostPosition = randInt(0, 3);
+
 }
 
 void Game::handleInput()

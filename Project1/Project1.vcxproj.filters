@@ -72,6 +72,9 @@
     <ClCompile Include="source\Button.cpp">
       <Filter>Source Files\Helper Source</Filter>
     </ClCompile>
+    <ClCompile Include="source\Vector2f.cpp">
+      <Filter>Source Files\Helper Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Game.h">
@@ -114,6 +117,9 @@
       <Filter>Header Files\Helper Headers</Filter>
     </ClInclude>
     <ClInclude Include="header\Button.h">
+      <Filter>Header Files\Helper Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Vector2f.h">
       <Filter>Header Files\Helper Headers</Filter>
     </ClInclude>
   </ItemGroup>

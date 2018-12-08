@@ -1,6 +1,8 @@
 #include "Player.h"
 
-Player::Player()
+Player::Player() :
+	m_speed(0.5f),
+	m_deltaTime(0.0f)
 {
 	//Add the four rectangles for our player spritesheet
 	m_textureRects.push_back(Rect(0, 0, 75, 75));
@@ -11,6 +13,12 @@ Player::Player()
 
 Player::~Player()
 {
+}
+
+void Player::initPlayer(Vector2f pos, int textureIndex)
+{
+	m_position = pos;
+	m_textureIndex = textureIndex;
 }
 
 void Player::setTexture(ResourceHandler & resources)
@@ -33,8 +41,15 @@ void Player::setPosition(float x, float y)
 	m_position.y = y;
 }
 
-void Player::update()
-{
+void Player::update(double dt)
+{ 
+	m_deltaTime = dt; //Set our delta time
+
+	//Add our velocity to our position
+	m_position += m_velocity;
+
+
+	m_sprite.setPosition(m_position.x, m_position.y);
 }
 
 void Player::serverUpdate()
@@ -49,4 +64,32 @@ void Player::draw(SDL_Renderer * renderer)
 
 void Player::handleInput(InputHandler & input)
 {
+	//Reset velocity
+	m_velocity.zeroVector();
+
+	//Add speed to our position if we move
+	if(input.isButtonDown("W"))
+	{
+		m_velocity.y = -1;
+	}
+	if (input.isButtonDown("S"))
+	{
+		m_velocity.y = 1;
+	}
+	if (input.isButtonDown("A"))
+	{
+		m_velocity.x = -1;
+	}
+	if (input.isButtonDown("D"))
+	{
+		m_velocity.x = 1;
+	}
+
+	//Get the speed of the vector in both x and y
+	if (m_velocity != Vector2f(0, 0))
+	{
+		//Set the velocity by getting the angle
+		m_velocity = m_velocity.normalise() * m_speed * m_deltaTime;
+		std::cout << m_velocity << std::endl;
+	}
 }

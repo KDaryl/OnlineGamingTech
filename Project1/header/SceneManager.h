@@ -10,7 +10,7 @@ public:
 	SceneManager();
 	~SceneManager();
 
-	void update();
+	void update(double dt);
 	void draw(SDL_Renderer* renderer);
 	std::string handleInput(InputHandler& input);
 

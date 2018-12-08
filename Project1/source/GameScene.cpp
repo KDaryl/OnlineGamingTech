@@ -2,6 +2,7 @@
 
 GameScene::GameScene()
 {
+	m_startPositions.push_back(Vector2f());
 }
 
 GameScene::~GameScene()
@@ -13,10 +14,10 @@ void GameScene::init(bool isHostBool)
 	m_isHost = isHostBool;
 }
 
-void GameScene::update()
+void GameScene::update(double dt)
 {
 	//Update the player
-	m_player.update();
+	m_player.update(dt);
 }
 
 void GameScene::draw(SDL_Renderer * renderer)
@@ -32,6 +33,7 @@ std::string GameScene::handleInput(InputHandler & input, std::string currentScen
 {
 	std::string newScene = currentScene;
 
+	m_player.handleInput(input);
 
 	return newScene;
 }

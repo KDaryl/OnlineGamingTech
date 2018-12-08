@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include <stdio.h>
+#include <random>
 
 //Include MY header files
 #include "Timer.h"
@@ -15,7 +16,8 @@ public:
 	~Game() {};
 	void run(); //Here is where are game loop will be
 	void processEvents(SDL_Event& e); //Process Game events
-	void update(); //Where we will update the game
+	void update(double dt); //Where we will update the game
+	void setUpGame(); //Where we setup the game parameters
 	void handleInput(); //Where we will update and handle input
 	void draw(); //Where we will draw the game
 	void close(); //Where we will close/exit our game

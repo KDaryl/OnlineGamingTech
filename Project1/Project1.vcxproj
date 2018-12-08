@@ -34,6 +34,7 @@
     <ClCompile Include="source\SceneManager.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
     <ClCompile Include="source\Timer.cpp" />
+    <ClCompile Include="source\Vector2f.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Animation.h" />
@@ -50,6 +51,7 @@
     <ClInclude Include="header\SceneManager.h" />
     <ClInclude Include="header\Sprite.h" />
     <ClInclude Include="header\Timer.h" />
+    <ClInclude Include="header\Vector2f.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

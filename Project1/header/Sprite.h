@@ -1,8 +1,18 @@
 #pragma once
 #include <iostream>
 #include "SDL.h"
+#include <random>
 #include "CollisionBox.h"
+#include "Vector2f.h"
 
+static int randInt(int min, int max)
+{
+	std::random_device rd;  //Will be used to obtain a seed for the random number engine
+	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+	std::uniform_int_distribution<> dis(min, max); //Ste min and max values for random number
+	//Return a random value between min and max
+	return dis(gen);
+}
 
 ///
 /// Simple sprite class with rectangular collider, can change this to circle collider with base class "Collider"
@@ -29,12 +39,6 @@ public:
 	SDL_Rect getRect() { return m_dst; }
 	CollisionBox& getCollider() { return m_collider; }
 private:
-	struct Vector2f
-	{
-		float x = 0;
-		float y = 0;
-	};
-
 	SDL_Texture* m_texture;
 	SDL_Rect m_src;
 	SDL_Rect m_dst;

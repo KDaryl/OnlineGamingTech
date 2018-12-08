@@ -14,12 +14,12 @@ SceneManager::~SceneManager()
 {
 }
 
-void SceneManager::update()
+void SceneManager::update(double dt)
 {
 	//If the current ptr is not null then update the current scene
 	if (nullptr != m_current.second)
 	{
-		m_current.second->update();
+		m_current.second->update(dt);
 	}
 }
 

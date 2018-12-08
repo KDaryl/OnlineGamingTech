@@ -15,7 +15,7 @@ void MainMenuScene::init(bool isHostBool)
 {
 }
 
-void MainMenuScene::update()
+void MainMenuScene::update(double dt)
 {
 	//Update our buttons
 	for (auto& pair : m_buttons)
