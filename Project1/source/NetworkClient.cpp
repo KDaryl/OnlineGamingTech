@@ -1,5 +1,11 @@
 #include "Network.h"
 
+void Client::sendData(std::string data, Packet packet)
+{
+	m_setDataToSend.first = data;
+	m_setDataToSend.second = packet;
+}
+
 bool Client::ProcessPacket(Packet _packettype)
 {
 	switch (_packettype)
@@ -13,14 +19,37 @@ bool Client::ProcessPacket(Packet _packettype)
 
 		//If I have been chosen as the host then set myself up as a server and send
 		//my Ip and port to the server to tell everyone to connect to me
-		if (Message == "You are the host")
+		if (Message == "You are the Host")
 		{
+			Message = "Testtt";
+			SendString(Message, P_ChatMessage);
 			//Set us as the host
 			isHost = true;
+		}
+		break;
+	}
+
+	case P_SetupGame: //If packet is a setup game packet, read in the data
+	{
+		std::string Message; //string to store our message we received
+		if (!GetString(Message)) //Get the chat message and store it in variable: Message
+			return false; //If we do not properly get the chat message, return false
+
+
+		char cStr[] = "";
+		strcpy(cStr, Message.c_str());
+
+		//Read in the string as data so it can be read
+		char * tknSplit = strtok(cStr, ":,");
+		while (tknSplit != NULL) //Loop through the message and split it by token
+		{
+			std::cout << tknSplit << std::endl;
+			tknSplit = strtok(cStr, ":,");
 		}
 
 		break;
 	}
+
 	default: //If packet type is not accounted for
 		std::cout << "Unrecognized packet: " << _packettype << std::endl; //Display that packet was not found
 		break;
@@ -30,13 +59,19 @@ bool Client::ProcessPacket(Packet _packettype)
 
 void Client::ClientThread()
 {
-	Packet PacketType;
+	Packet packettype;
 	while (true)
 	{
-		if (!clientptr->GetPacketType(PacketType)) //Get packet type
+		if (!clientptr->GetPacketType(packettype)) //Get packet type
+		{
+			std::cout << "Failed to get packet type" << std::endl;
 			break; //If there is an issue getting the packet type, exit this loop
-		if (!clientptr->ProcessPacket(PacketType)) //Process packet (packet type)
+		}
+		if (!clientptr->ProcessPacket(packettype)) //Process packet (packet type)
+		{
+			std::cout << "Failed to process packet type" << std::endl;
 			break; //If there is an issue processing the packet, exit this loop
+		}
 	}
 	std::cout << "Lost connection to the server." << std::endl;
 	if (clientptr->CloseConnection()) //Try to close socket connection..., If connection socket was closed properly
@@ -49,7 +84,8 @@ void Client::ClientThread()
 	}
 }
 
-Client::Client(std::string IP, int PORT)
+Client::Client(std::string IP, int PORT) :
+	m_setDataToSend(std::pair<std::string, Packet>("EMPTY", P_ChatMessage))
 {
 	//Winsock Startup
 	WSAData wsaData;
@@ -151,25 +187,7 @@ bool Client::GetPacketType(Packet & _packettype)
 	return true;//Return true if we were successful in retrieving the packet type
 }
 
-bool Client::ListenForNewConnection()
-{
-	SOCKET newConnection = accept(sListen, (SOCKADDR*)&sAddr, &sizeOfSAddr); //Accept a new connection
-	if (newConnection == 0) //If accepting the client connection failed
-	{
-		std::cout << "Failed to accept the client's connection." << std::endl;
-		return false;
-	}
-	else //If client connection properly accepted
-	{
-		std::cout << "Client Connected! ID:" << TotalConnections << std::endl;
-		Connections[TotalConnections] = newConnection; //Set socket in array to be the newest connection before creating the thread to handle this client's socket.
-		CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientThread, (LPVOID)(TotalConnections), NULL, NULL); //Create Thread to handle this client. The index in the socket array for this thread is the value (i).
-		TotalConnections += 1; //Incremenent total # of clients that have connected
-		return true;
-	}
-}
-
-bool Client::SendString(std::string & _string)
+bool Client::SendString(std::string & _string, Packet packetType)
 {
 	if (!SendPacketType(P_ChatMessage)) //Send packet type: Chat Message, If sending packet type fails...
 		return false; //Return false: Failed to send string

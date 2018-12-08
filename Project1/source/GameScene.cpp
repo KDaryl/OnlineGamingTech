@@ -2,7 +2,11 @@
 
 GameScene::GameScene()
 {
-	m_startPositions.push_back(Vector2f());
+	//The four starting positions that the player can be in
+	m_startPositions.push_back(Vector2f(0, 0));
+	m_startPositions.push_back(Vector2f(1205, 0));
+	m_startPositions.push_back(Vector2f(0, 645));
+	m_startPositions.push_back(Vector2f(1205, 645));
 }
 
 GameScene::~GameScene()

@@ -22,13 +22,13 @@
     <ClCompile Include="source\Animation.cpp" />
     <ClCompile Include="source\Button.cpp" />
     <ClCompile Include="source\CollisionBox.cpp" />
+    <ClCompile Include="source\CollisionCircle.cpp" />
     <ClCompile Include="source\Game.cpp" />
     <ClCompile Include="source\GameScene.cpp" />
     <ClCompile Include="source\InputHandler.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\MainMenu.cpp" />
     <ClCompile Include="source\NetworkClient.cpp" />
-    <ClCompile Include="source\NetworkServer.cpp" />
     <ClCompile Include="source\Player.cpp" />
     <ClCompile Include="source\ResourceHandler.cpp" />
     <ClCompile Include="source\SceneManager.cpp" />
@@ -40,6 +40,7 @@
     <ClInclude Include="header\Animation.h" />
     <ClInclude Include="header\Button.h" />
     <ClInclude Include="header\CollisionBox.h" />
+    <ClInclude Include="header\CollisionCircle.h" />
     <ClInclude Include="header\Game.h" />
     <ClInclude Include="header\GameScene.h" />
     <ClInclude Include="header\InputHandler.h" />

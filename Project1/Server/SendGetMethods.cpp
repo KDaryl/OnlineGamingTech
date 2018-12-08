@@ -1,13 +1,17 @@
 #include "Server.h"
 
-bool Server::recvall(SOCKET* ID, char * data, int totalbytes)
+bool Server::recvall(SOCKET& ID, char * data, int totalbytes)
 {
 	int bytesreceived = 0; //Holds the total bytes received
 	while (bytesreceived < totalbytes) //While we still have more bytes to recv
 	{
-		int RetnCheck = recv(*ID, data, totalbytes - bytesreceived, NULL); //Try to recv remaining bytes
+		int RetnCheck = recv(ID, data, totalbytes - bytesreceived, NULL); //Try to recv remaining bytes
 		if (RetnCheck == SOCKET_ERROR) //If there is a socket error while trying to recv bytes
+		{
+			std::cout << "Winsock Error : " + std::to_string(WSAGetLastError()) << std::endl;
 			return false; //Return false - failed to recvall
+		}
+
 		bytesreceived += RetnCheck; //Add to total bytes received
 	}
 	return true; //Success!
@@ -33,7 +37,7 @@ bool Server::SendInt(SOCKET* ID, int _int)
 	return true; //Return true: int successfully sent
 }
 
-bool Server::GetInt(SOCKET* ID, int & _int)
+bool Server::GetInt(SOCKET& ID, int & _int)
 {
 	if (!recvall(ID, (char*)&_int, sizeof(int))) //Try to receive int... If int fails to be recv'd
 		return false; //Return false: Int not successfully received
@@ -49,14 +53,14 @@ bool Server::SendPacketType(SOCKET* ID, Packet _packettype)
 
 bool Server::GetPacketType(SOCKET* ID, Packet & _packettype)
 {
-	if (!recvall(ID, (char*)&_packettype, sizeof(Packet))) //Try to receive packet type... If packet type fails to be recv'd
+	if (!recvall(*ID, (char*)&_packettype, sizeof(Packet))) //Try to receive packet type... If packet type fails to be recv'd
 		return false; //Return false: packet type not successfully received
 	return true;//Return true if we were successful in retrieving the packet type
 }
 
-bool Server::SendString(SOCKET* ID, std::string & _string)
+bool Server::SendString(SOCKET* ID, std::string & _string, Packet packetType)
 {
-	if (!SendPacketType(ID, P_ChatMessage)) //Send packet type: Chat Message, If sending packet type fails...
+	if (!SendPacketType(ID, packetType)) //Send packet type, If sending packet type fails...
 		return false; //Return false: Failed to send string
 	int bufferlength = _string.size(); //Find string buffer length
 	if (!SendInt(ID, bufferlength)) //Send length of string buffer, If sending buffer length fails...
@@ -66,7 +70,7 @@ bool Server::SendString(SOCKET* ID, std::string & _string)
 	return true; //Return true: string successfully sent
 }
 
-bool Server::GetString(SOCKET* ID, std::string & _string)
+bool Server::GetString(SOCKET& ID, std::string & _string)
 {
 	int bufferlength; //Holds length of the message
 	if (!GetInt(ID, bufferlength)) //Get length of buffer and store it in variable: bufferlength

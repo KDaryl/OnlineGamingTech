@@ -85,7 +85,7 @@ bool Server::ListenForNewConnection()
 				Games[*gamePair.first] = *gamePair.second;
 
 				std::string msg = "You are the Host";
-				SendString(gamePair.first, msg); //Send you are the host msg to the host selected
+				SendString(gamePair.first, msg, P_ChatMessage); //Send you are the host msg to the host selected
 
 				std::cout << "Game created" << std::endl;
 			}
@@ -101,19 +101,41 @@ bool Server::ProcessPacket(SOCKET* ID, Packet _packettype)
 	case P_ChatMessage: //Packet Type: chat message
 	{
 		std::string Message; //string to store our message we received
-		if (!GetString(ID, Message)) //Get the chat message and store it in variable: Message
+		if (!GetString(*ID, Message)) //Get the chat message and store it in variable: Message
 			return false; //If we do not properly get the chat message, return false
 		//Next we need to send the message out to each user -> this needs to not send anything
 		for (auto& pair : Connections)
 		{
 			if (pair.first == *ID) //If connection is the user who sent the message...
 				continue;//Skip to the next user since there is no purpose in sending the message back to the user who sent it.
-			if (!SendString(&pair.first, Message)) //Send message to connection at index i, if message fails to be sent...
+			if (!SendString(&pair.first, Message, P_ChatMessage)) //Send message to connection at index i, if message fails to be sent...
 			{
 				std::cout << "Failed to send message from a client to another" << std::endl;
 			}
 		}
 		std::cout << "Processed chat message packet from user ID: " << ID << std::endl;
+		break;
+	}
+	case P_SetupGame:
+	{
+		std::string Message; //string to store our message we received
+		if (!GetString(*ID, Message)) //Get the chat message and store it in variable: Message
+			return false; //If we do not properly get the chat message, return false
+		//Next we need to send the message to the other players that are part of this game
+		for (auto& pair : Games)
+		{
+			//If we are part of this game then send the setup game packet to the other players, since it is the host who sends this message
+			//We know the host is awlays the first in a game vector
+			if (pair.first == *ID)
+			{
+				if (!SendString(&pair.second, Message, P_SetupGame)) //Send message to connection at index i, if message fails to be sent...
+				{
+					std::cout << "Failed to send setup packet from a client to another" << std::endl;
+				}
+				break; //Can stop looping as we have found the other players
+			}
+		}
+		std::cout << "Processed SetupGame packet from user ID: " << ID << std::endl;
 		break;
 	}
 
@@ -171,12 +193,12 @@ void Server::ClientHandlerThread(SOCKET* ID) //ID = the index in the SOCKET Conn
 		}
 	}
 
-	Packet PacketType;
+	Packet packettype;
 	while (true)
 	{
-		if (!serverptr->GetPacketType(ID, PacketType)) //Get packet type
+		if (!serverptr->GetPacketType(ID, packettype)) //Get packet type
 			break; //If there is an issue getting the packet type, exit this loop
-		if (!serverptr->ProcessPacket(ID, PacketType)) //Process packet (packet type)
+		if (!serverptr->ProcessPacket(ID, packettype)) //Process packet (packet type)
 			break; //If there is an issue processing the packet, exit this loop
 	}
 	std::cout << "Lost connection to client ID: " << ID << std::endl;
@@ -196,7 +218,8 @@ void Server::ClientHandlerThread(SOCKET* ID) //ID = the index in the SOCKET Conn
 	//Close the socket
 	closesocket(serverptr->Connections.at(index).first);
 	//Remove socket from our vector of connections
-	serverptr->Connections.erase(pos);
+	if(pos != serverptr->Connections.end())
+		serverptr->Connections.erase(pos);
 	return;
 }
 

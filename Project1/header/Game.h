@@ -42,10 +42,14 @@ private:
 	SceneManager m_sceneManager;
 	ResourceHandler m_resources;
 	 
-	//Temp variables for connection test
+	//variables for connection and sendign updates
 	bool m_connectedToServer;
 	bool m_clickedJoin;
 	bool m_startGame, m_gameHasStarted;
 	Client m_serverConnection;
-	Server m_clientHostServer;
+
+	//Packet sending/recieving objects
+	int m_myColourInt, m_mystartPosition;
+
+
 };

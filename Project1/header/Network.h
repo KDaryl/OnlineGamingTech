@@ -1,48 +1,17 @@
 #pragma once
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 #pragma comment(lib,"ws2_32.lib")
 #include <WinSock2.h>
 #include <string>
 #include <iostream>
+#include <map>
 
 enum Packet
 {
 	P_ChatMessage,
+	P_SetupGame,
 	P_Test
-};
-
-class Server
-{
-public:
-	Server() {}
-	Server(std::string IP, int PORT, bool BroadcastPublically = false);
-	bool ListenForNewConnection();
-
-	int totalConnections() { return TotalConnections; }
-private:
-	bool sendall(SOCKET& socket, char * data, int totalbytes);
-	bool recvall(SOCKET& socket, char * data, int totalbytes);
-
-	bool SendInt(SOCKET& socket, int _int);
-	bool GetInt(SOCKET& socket, int & _int);
-
-	bool SendPacketType(SOCKET& socket, Packet _packettype);
-	bool GetPacketType(SOCKET& socket, Packet & _packettype);
-
-	bool SendString(SOCKET& socket, std::string & _string);
-	bool GetString(SOCKET& socket, std::string & _string);
-
-	bool ProcessPacket(SOCKET& socket, Packet _packettype);
-
-	static void ClientHandlerThread(int ID);
-
-private:
-	SOCKET Connections[100];
-	int TotalConnections = 0;
-
-	SOCKADDR_IN addr; //Address that we will bind our listening socket to
-	int addrlen = sizeof(addr);
-	SOCKET sListen;
 };
 
 class Client
@@ -51,16 +20,18 @@ public: //Public functions
 	Client(std::string IP, int PORT);
 	bool ConnectToServer();
 
-	//Will listen for another player connection
-	bool ListenForNewConnection();
-
-	bool SendString(std::string & _string);
+	bool SendString(std::string & _string, Packet packetType);
 	bool CloseConnection();
 
 	//Bool to get wheter we are the host or not
 	bool selectedAsHost() { return isHost; }
 	bool startGame() {return startTheGame; }
 	bool lostConnecion() { return lostConnection; }
+
+	void sendData(std::string data, Packet packet);
+
+	std::map<std::string, int> m_setupGameData;
+
 private: //Private functions
 	bool ProcessPacket(Packet _packettype);
 	static void ClientThread();
@@ -76,7 +47,6 @@ private: //Private functions
 	bool GetPacketType(Packet & _packettype);
 	bool GetString(std::string & _string);
 
-private:
 	SOCKET Connections[100];
 	int TotalConnections = 0;
 	SOCKADDR_IN addr, sAddr; //Address to be binded to our Connection socket, and our server listen socket
@@ -85,8 +55,9 @@ private:
 	bool startTheGame;
 	bool isHost;
 	bool lostConnection;
-	SOCKET serverConnection, sListen;
+	SOCKET serverConnection;
+
+	std::pair<std::string, Packet> m_setDataToSend; //We will set this outside of our class and send it during our thread handler
 };
 
 static Client * clientptr; //This client ptr is necessary so that the ClientThread method can access the Client instance/methods.
-static Server * serverptr; //Serverptr is necessary so the static ClientHandler method can access the server instance/functions.

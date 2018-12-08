@@ -14,6 +14,7 @@ typedef std::pair<SOCKET*, SOCKET*> gamePair; //Our pair of sockets for games, f
 enum Packet
 {
 	P_ChatMessage,
+	P_SetupGame,
 	P_Test
 };
 
@@ -25,16 +26,16 @@ public:
 
 private:
 	bool sendall(SOCKET* ID, char * data, int totalbytes);
-	bool recvall(SOCKET* ID, char * data, int totalbytes);
+	bool recvall(SOCKET& ID, char * data, int totalbytes);
 
 	bool SendInt(SOCKET* ID, int _int);
-	bool GetInt(SOCKET* ID, int & _int);
+	bool GetInt(SOCKET& ID, int & _int);
 
 	bool SendPacketType(SOCKET* ID, Packet _packettype);
 	bool GetPacketType(SOCKET* ID, Packet & _packettype);
 
-	bool SendString(SOCKET* ID, std::string & _string);
-	bool GetString(SOCKET* ID, std::string & _string);
+	bool SendString(SOCKET* ID, std::string & _string, Packet packetType);
+	bool GetString(SOCKET& ID, std::string & _string);
 
 	bool ProcessPacket(SOCKET* ID, Packet _packettype);
 

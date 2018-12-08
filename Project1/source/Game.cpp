@@ -60,7 +60,7 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 				//Set all the textures for the game as appropriate
 				m_sceneManager.setTexture(m_resources);
 
-				m_sceneManager.setCurrent("Game Scene");
+				//m_sceneManager.setCurrent("Game Scene");
 
 				//Set connected to server to false
 				m_connectedToServer = false;
@@ -76,13 +76,6 @@ void Game::run()
 		Uint64 NOW = SDL_GetPerformanceCounter();
 		Uint64 LAST = 0;
 		double deltaTime = 0;
-
-
-		//Create our timer
-		//Timer timer;
-		//Start our timer
-		//timer.start();
-		//int lag = 0; //Lag will determine if we need to catch up with updates
 
 		//Event handler
 		SDL_Event e;
@@ -144,6 +137,7 @@ void Game::update(double dt)
 		{
 			//Setup game parameters and send them to the other player and then start the game
 			setUpGame();
+			m_startGame = true;
 		}
 
 		//set player colours and starting positions and send them to the other player
@@ -180,11 +174,28 @@ void Game::update(double dt)
 	}
 }
 
+//This method is called from the host, in here we will set the position and colour of the host
+//and the other players, for now we are only doing this for 1 other player
 void Game::setUpGame()
 {
 	int hostColourIndex = randInt(0, 3);
 	int hostPosition = randInt(0, 3);
 
+	//Set the hosts position
+	m_myColourInt = hostColourIndex;
+	m_mystartPosition = hostPosition;
+
+	//Set the color and position of the other player(s)
+	int otherStartPos = hostPosition == 0 ? 3 : hostPosition == 1 ? 2 : hostPosition == 2 ? 1 : 0;
+	int otherColour = hostColourIndex == 0 ? 3 : hostColourIndex == 1 ? 2 : hostColourIndex == 2 ? 1 : 0;
+
+	std::string msg = "";
+	msg = "Colour:" + std::to_string(otherColour) + ",Position:" + std::to_string(otherStartPos);
+
+	//Send the message to every other player (just 1 for now) as a SetupGame packet
+	//m_serverConnection.SendString(msg, P_ChatMessage);
+
+	std::cout << "Setting up game" << std::endl;
 }
 
 void Game::handleInput()

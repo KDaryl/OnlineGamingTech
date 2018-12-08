@@ -2,7 +2,8 @@
 
 Player::Player() :
 	m_speed(0.5f),
-	m_deltaTime(0.0f)
+	m_deltaTime(0.0f),
+	m_circleCollider(0, 0, 32.5f)
 {
 	//Add the four rectangles for our player spritesheet
 	m_textureRects.push_back(Rect(0, 0, 75, 75));
@@ -48,7 +49,9 @@ void Player::update(double dt)
 	//Add our velocity to our position
 	m_position += m_velocity;
 
-
+	//Set our collider and sprite positions
+	m_circleCollider.setPosition(m_position.x, m_position.y);
+	m_boxCollider.setPosition(m_position.x, m_position.y);
 	m_sprite.setPosition(m_position.x, m_position.y);
 }
 
@@ -85,11 +88,10 @@ void Player::handleInput(InputHandler & input)
 		m_velocity.x = 1;
 	}
 
-	//Get the speed of the vector in both x and y
+	//Get the speed of the vector in both x and y if the vector had changed
 	if (m_velocity != Vector2f(0, 0))
 	{
 		//Set the velocity by getting the angle
 		m_velocity = m_velocity.normalise() * m_speed * m_deltaTime;
-		std::cout << m_velocity << std::endl;
 	}
 }

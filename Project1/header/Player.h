@@ -3,6 +3,8 @@
 #include "Sprite.h"
 #include "ResourceHandler.h"
 #include "InputHandler.h"
+#include "CollisionCircle.h"
+
 
 class Player
 {
@@ -43,5 +45,7 @@ private:
 	float m_speed, m_deltaTime;
 	int m_textureIndex;
 	Sprite m_sprite;
+	CollisionBox m_boxCollider;
+	CollisionCircle m_circleCollider;
 };
 
