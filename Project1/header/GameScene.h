@@ -10,7 +10,7 @@ class GameScene : public Scene
 public:
 	GameScene();
 	~GameScene();
-	void init(bool isHostBool);
+	void init(int pos, int col, bool isHostBool);
 	void update(double dt);
 	void draw(SDL_Renderer* renderer);
 	std::string handleInput(InputHandler& input, std::string currentScene);

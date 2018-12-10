@@ -33,7 +33,7 @@ public: //Public functions
 
 	std::map<std::string, int> m_setupGameData;
 
-	std::vector<int> startGameData;
+	std::vector<int> startGameData = { 99, 99 };
 
 private: //Private functions
 	bool ProcessPacket(Packet _packettype);

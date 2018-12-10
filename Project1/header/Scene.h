@@ -9,7 +9,6 @@ class Scene
 public:
 	Scene() {};
 	~Scene() {};
-	virtual void init(bool isHostBool) = 0;
 	virtual void update(double dt) = 0;
 	virtual void draw(SDL_Renderer* renderer) = 0;
 	virtual std::string handleInput(InputHandler& input, std::string currentScene) = 0;

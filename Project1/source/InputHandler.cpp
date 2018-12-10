@@ -51,7 +51,7 @@ void InputHandler::checkKey(std::string key, SDL_Keycode code)
 
 bool InputHandler::isButtonPressed(std::string button)
 {
-	return m_current[button] && !m_previous[button] ? true : false;
+	return m_current[button] && !m_previous[button];
 }
 
 bool InputHandler::isButtonDown(std::string button)

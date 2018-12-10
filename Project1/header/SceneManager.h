@@ -17,16 +17,15 @@ public:
 	void setCurrent(std::string sceneName);
 	void setTexture(ResourceHandler& resources);
 	Scene* getScene(std::string sceneName) { return m_scenes[sceneName]; }
-	GameScene& getGameSene() { return m_gameScene; }
+
+	//Our scenes
+	MainMenuScene m_menuScene;
+	GameScene m_gameScene;
 private:
 	typedef std::pair<std::string, Scene*> MTuple; //A tuple for handling the current scene 
 
 	std::map<std::string, Scene*> m_scenes; //Our map of scenes
 	
 	MTuple m_current; //The current scene
-
-	//Our scenes
-	MainMenuScene m_menuScene;
-	GameScene m_gameScene;
 };
 

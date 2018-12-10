@@ -62,6 +62,9 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 				//Set all the textures for the game as appropriate
 				m_sceneManager.setTexture(m_resources);
 
+				//Set game scene -> Temp, remove
+				m_sceneManager.setCurrent("Game Scene");
+
 				//Set connected to server to false
 				m_connectedToServer = false;
 			}
@@ -130,7 +133,7 @@ void Game::update(double dt)
 		m_connectedToServer = false;
 	}
 
-	if (m_gameHasStarted == false)
+	if (m_gameHasStarted == false && m_connectedToServer)
 	{
 		//Set start game true for thehost so the host can setup game parameters
 		if (m_serverConnection.selectedAsHost())

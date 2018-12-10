@@ -4,9 +4,9 @@
 class Vector2f
 {
 public:
-	Vector2f();
-	Vector2f(float _x, float _y);
-	~Vector2f();
+	Vector2f(); //Default constructor
+	Vector2f(float _x, float _y); //Constructor that takes in 2 values (x and y)
+	~Vector2f(); //Destructor
 
 	//Operator overloading
 	void operator=(const Vector2f &v); //Assignment operator
@@ -20,7 +20,7 @@ public:
 	void operator*=(float val); //Multiplication equals operator
 	Vector2f operator-(const Vector2f &v); //Minus operator
 	Vector2f operator*(float val); //Multiplication operator
-	friend std::ostream & operator << (std::ostream &out, const Vector2f &v);
+	friend std::ostream & operator << (std::ostream &out, const Vector2f &v); //Cout operator to easily debug vectors
 
 	//Vector operations
 	float distance(Vector2f& v1, Vector2f& v2);

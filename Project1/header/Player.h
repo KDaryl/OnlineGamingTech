@@ -24,6 +24,9 @@ public:
 
 	void handleInput(InputHandler& input);
 
+	//Get circle collider
+	CollisionCircle& getCircleCollider() { return m_circleCollider; }
+
 private:
 	//Simple rect class
 	struct Rect

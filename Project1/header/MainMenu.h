@@ -10,7 +10,6 @@ class MainMenuScene : public Scene
 public:
 	MainMenuScene();
 	~MainMenuScene();
-	void init(bool isHostBool);
 	void update(double dt);
 	void draw(SDL_Renderer* renderer);
 	std::string handleInput(InputHandler& input, std::string currentScene);

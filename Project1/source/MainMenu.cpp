@@ -11,10 +11,6 @@ MainMenuScene::~MainMenuScene()
 {
 }
 
-void MainMenuScene::init(bool isHostBool)
-{
-}
-
 void MainMenuScene::update(double dt)
 {
 	//Update our buttons
