@@ -10,6 +10,8 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 	m_startGame(false),
 	m_frameRate(FPS),
 	m_msPerFrame(0),
+	m_myColourInt(99), //Default to 99
+	m_mystartPosition(99), //Default to 99
 	m_resources("images/"),
 	m_serverConnection("127.0.0.1", 100) //Create a connection to the server at IP and PORT
 {
@@ -59,8 +61,6 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 
 				//Set all the textures for the game as appropriate
 				m_sceneManager.setTexture(m_resources);
-
-				//m_sceneManager.setCurrent("Game Scene");
 
 				//Set connected to server to false
 				m_connectedToServer = false;
@@ -140,6 +140,14 @@ void Game::update(double dt)
 			m_startGame = true;
 		}
 
+		//If our start position has not been set, get them from the GameData
+		if (m_mystartPosition == 99)
+		{
+			m_myColourInt = m_serverConnection.startGameData.at(0);
+			m_mystartPosition = m_serverConnection.startGameData.at(1);
+			m_startGame = true;
+		}
+
 		//set player colours and starting positions and send them to the other player
 		if (m_startGame)
 		{
@@ -167,7 +175,6 @@ void Game::update(double dt)
 		else
 		{
 			m_connectedToServer = true;
-			std::cout << "Connected" << std::endl;
 		}
 
 		m_clickedJoin = false;
@@ -193,7 +200,7 @@ void Game::setUpGame()
 	msg = "Colour:" + std::to_string(otherColour) + ",Position:" + std::to_string(otherStartPos);
 
 	//Send the message to every other player (just 1 for now) as a SetupGame packet
-	//m_serverConnection.SendString(msg, P_ChatMessage);
+	m_serverConnection.SendString(msg, P_SetupGame);
 
 	std::cout << "Setting up game" << std::endl;
 }

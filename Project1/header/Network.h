@@ -5,6 +5,7 @@
 #include <WinSock2.h>
 #include <string>
 #include <iostream>
+#include <vector>
 #include <map>
 
 enum Packet
@@ -31,6 +32,8 @@ public: //Public functions
 	void sendData(std::string data, Packet packet);
 
 	std::map<std::string, int> m_setupGameData;
+
+	std::vector<int> startGameData;
 
 private: //Private functions
 	bool ProcessPacket(Packet _packettype);

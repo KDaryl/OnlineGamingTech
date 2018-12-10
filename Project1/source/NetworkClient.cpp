@@ -17,12 +17,12 @@ bool Client::ProcessPacket(Packet _packettype)
 			return false; //If we do not properly get the chat message, return false
 		std::cout << Message << std::endl; //Display the message to the user
 
-		//If I have been chosen as the host then set myself up as a server and send
-		//my Ip and port to the server to tell everyone to connect to me
+		//Set the player as the host (the person who decides, colours, collisions etc.)
 		if (Message == "You are the Host")
 		{
-			Message = "Testtt";
-			SendString(Message, P_ChatMessage);
+			//Reset the start game data
+			startGameData.at(0) = 99;
+			startGameData.at(1) = 99;
 			//Set us as the host
 			isHost = true;
 		}
@@ -34,19 +34,26 @@ bool Client::ProcessPacket(Packet _packettype)
 		std::string Message; //string to store our message we received
 		if (!GetString(Message)) //Get the chat message and store it in variable: Message
 			return false; //If we do not properly get the chat message, return false
+		
 
+		startGameData.at(0) = 99;
+		startGameData.at(1) = 99;
+		//Get the values
+		std::string valDelim = ":", variableDelim = ",";
+		std::string tkn = "";
+		int pos = 0, start = 0;
 
-		char cStr[] = "";
-		strcpy(cStr, Message.c_str());
-
-		//Read in the string as data so it can be read
-		char * tknSplit = strtok(cStr, ":,");
-		while (tknSplit != NULL) //Loop through the message and split it by token
+		//Loop twice
+		for(int i = 0; i < 2; i++)
 		{
-			std::cout << tknSplit << std::endl;
-			tknSplit = strtok(cStr, ":,");
+			start = Message.find(valDelim);
+			pos = Message.find(variableDelim);
+			tkn = Message.substr(start + 1, pos - start - 1);
+			std::cout << tkn << std::endl;
+			Message = Message.substr(pos + variableDelim.length());
+			start = pos;
+			startGameData.push_back(stoi(tkn));
 		}
-
 		break;
 	}
 
@@ -59,19 +66,25 @@ bool Client::ProcessPacket(Packet _packettype)
 
 void Client::ClientThread()
 {
-	Packet packettype;
+	std::vector<Packet> PacketTypes = {P_ChatMessage, P_SetupGame};
 	while (true)
 	{
-		if (!clientptr->GetPacketType(packettype)) //Get packet type
+		bool failed = true;
+		for (auto& packet : PacketTypes)
 		{
-			std::cout << "Failed to get packet type" << std::endl;
-			break; //If there is an issue getting the packet type, exit this loop
+			if (clientptr->GetPacketType(packet)) //Get packet type
+				failed = false; //Set to false if we 
+			if (clientptr->ProcessPacket(packet)) //Process packet (packet type)
+				failed = false;
 		}
-		if (!clientptr->ProcessPacket(packettype)) //Process packet (packet type)
+
+		//Break from the while loop if we failed to get/process a packet
+		if (failed)
 		{
-			std::cout << "Failed to process packet type" << std::endl;
-			break; //If there is an issue processing the packet, exit this loop
+			std::cout << "Failed to process or get a packet" << std::endl;
+			break;
 		}
+
 	}
 	std::cout << "Lost connection to the server." << std::endl;
 	if (clientptr->CloseConnection()) //Try to close socket connection..., If connection socket was closed properly
@@ -189,7 +202,7 @@ bool Client::GetPacketType(Packet & _packettype)
 
 bool Client::SendString(std::string & _string, Packet packetType)
 {
-	if (!SendPacketType(P_ChatMessage)) //Send packet type: Chat Message, If sending packet type fails...
+	if (!SendPacketType(packetType)) //Send packet type: Chat Message, If sending packet type fails...
 		return false; //Return false: Failed to send string
 	int bufferlength = _string.size(); //Find string buffer length
 	if (!SendInt(bufferlength)) //Send length of string buffer, If sending buffer length fails...
