@@ -24,8 +24,10 @@ public:
 
 	void handleInput(InputHandler& input);
 
+	//getters
 	//Get circle collider
 	CollisionCircle& getCircleCollider() { return m_circleCollider; }
+	Vector2f& getPosition() { return m_position; }
 
 private:
 	//Simple rect class

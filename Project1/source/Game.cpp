@@ -12,8 +12,7 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 	m_msPerFrame(0),
 	m_myColourInt(99), //Default to 99
 	m_mystartPosition(99), //Default to 99
-	m_resources("images/"),
-	m_serverConnection("127.0.0.1", 100) //Create a connection to the server at IP and PORT
+	m_resources("images/")
 {
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -63,7 +62,7 @@ Game::Game(Uint32 FPS, Uint32 windoWidth, Uint32 windowHeight) :
 				m_sceneManager.setTexture(m_resources);
 
 				//Set game scene -> Temp, remove
-				m_sceneManager.setCurrent("Game Scene");
+				//m_sceneManager.setCurrent("Game Scene");
 
 				//Set connected to server to false
 				m_connectedToServer = false;
@@ -103,7 +102,6 @@ void Game::run()
 			}
 			update(deltaTime);
 			draw();
-
 		}
 	}
 
@@ -128,7 +126,7 @@ void Game::processEvents(SDL_Event & e)
 
 void Game::update(double dt)
 {
-	if (m_serverConnection.lostConnecion())
+	if (m_sceneManager.m_gameScene.server().lostConnection())
 	{
 		m_connectedToServer = false;
 	}
@@ -136,7 +134,7 @@ void Game::update(double dt)
 	if (m_gameHasStarted == false && m_connectedToServer)
 	{
 		//Set start game true for thehost so the host can setup game parameters
-		if (m_serverConnection.selectedAsHost())
+		if (m_sceneManager.m_gameScene.server().selectedAsHost())
 		{
 			//Setup game parameters and send them to the other player and then start the game
 			setUpGame();
@@ -144,16 +142,20 @@ void Game::update(double dt)
 		}
 
 		//If our start position has not been set, get them from the GameData
-		if (m_mystartPosition == 99)
+		if (m_startGame == false && m_mystartPosition == 99)
 		{
-			m_myColourInt = m_serverConnection.startGameData.at(0);
-			m_mystartPosition = m_serverConnection.startGameData.at(1);
-			m_startGame = true;
+			m_myColourInt = m_sceneManager.m_gameScene.server().startGameData.at(0);
+			m_mystartPosition = m_sceneManager.m_gameScene.server().startGameData.at(1);
+
+			//If the data has been recieved then start
+			if(m_myColourInt != 99 && m_mystartPosition != 99)
+				m_startGame = true;
 		}
 
 		//set player colours and starting positions and send them to the other player
 		if (m_startGame)
 		{
+			m_sceneManager.m_gameScene.init(m_mystartPosition, m_myColourInt, m_sceneManager.m_gameScene.server().selectedAsHost());
 			m_gameHasStarted = true; //Set game started to true
 			m_sceneManager.setCurrent("Game Scene");
 		}
@@ -168,9 +170,8 @@ void Game::update(double dt)
 	//For joining the server
 	if (!m_connectedToServer && m_clickedJoin)
 	{
-
 		//Try connect to our server, if it fails output the error
-		if (!m_serverConnection.ConnectToServer())
+		if (!m_sceneManager.m_gameScene.server().ConnectToServer())
 		{
 			std::cout << "Could not connect to central server" << std::endl;
 		}
@@ -199,11 +200,13 @@ void Game::setUpGame()
 	int otherStartPos = hostPosition == 0 ? 3 : hostPosition == 1 ? 2 : hostPosition == 2 ? 1 : 0;
 	int otherColour = hostColourIndex == 0 ? 3 : hostColourIndex == 1 ? 2 : hostColourIndex == 2 ? 1 : 0;
 
-	std::string msg = "";
-	msg = "Colour:" + std::to_string(otherColour) + ",Position:" + std::to_string(otherStartPos);
+	std::vector<int> values = {otherStartPos, otherColour};
 
 	//Send the message to every other player (just 1 for now) as a SetupGame packet
-	m_serverConnection.SendString(msg, P_SetupGame);
+	m_sceneManager.m_gameScene.server().sendData(values, P_SetupGame);
+
+	//Set position and colour of other player
+	m_sceneManager.m_gameScene.setOtherPlayerPosition(otherStartPos, otherColour);
 
 	std::cout << "Setting up game" << std::endl;
 }

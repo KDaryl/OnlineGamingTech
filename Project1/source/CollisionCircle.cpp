@@ -21,7 +21,11 @@ CollisionCircle::~CollisionCircle()
 
 bool CollisionCircle::intersects(CollisionCircle & other)
 {
-	if(powf((other.x() - m_x), 2) + powf((m_y - other.y()), 2) <= powf((m_r - other.r()), 2))
+	auto one = powf(((other.x() + other.r()) - (m_x + m_r)), 2);
+	auto two = powf(((m_y + m_r) - (other.y() + other.r())), 2);
+	auto three = powf((m_r + other.r()), 2);
+
+	if(one + two <= three)
 		return true;
 	return false;
 }

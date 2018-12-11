@@ -10,6 +10,7 @@ enum Packet
 {
 	P_ChatMessage,
 	P_SetupGame,
+	P_GameUpdate,
 	P_Test
 };
 

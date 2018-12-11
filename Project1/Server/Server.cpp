@@ -99,6 +99,26 @@ bool Server::ProcessPacket(int ID, Packet _packettype)
 		break;
 	}
 
+	//If it is a game update packet
+	case P_GameUpdate:
+	{
+		std::string Message; //string to store our message we received
+		if (!GetString(ID, Message)) //Get the chat message and store it in variable: Message
+			return false; //If we do not properly get the chat message, return false
+
+		for (int i = 0; i < TotalConnections; i++)
+		{
+			if (i == ID) //If connection is the user who sent the message...
+				continue;//Skip to the next user since there is no purpose in sending the message back to the user who sent it.
+			if (!SendString(i, Message, P_GameUpdate)) //Send message to connection at index i, if message fails to be sent...
+			{
+				std::cout << "Failed to send message from client ID: " << ID << " to client ID: " << i << std::endl;
+			}
+		}
+
+		break;
+	}
+
 	default: //If packet type is not accounted for
 	{
 		std::cout << "Unrecognized packet: " << _packettype << std::endl; //Display that packet was not found
@@ -110,7 +130,7 @@ bool Server::ProcessPacket(int ID, Packet _packettype)
 
 void Server::ClientHandlerThread(int ID) //ID = the index in the SOCKET Connections array
 {
-	std::vector<Packet> PacketTypes = {P_ChatMessage, P_SetupGame};
+	std::vector<Packet> PacketTypes = {P_ChatMessage, P_SetupGame, P_GameUpdate};
 	while (true)
 	{
 		bool failed = true;

@@ -12,6 +12,7 @@ enum Packet
 {
 	P_ChatMessage,
 	P_SetupGame,
+	P_GameUpdate,
 	P_Test
 };
 
@@ -27,13 +28,14 @@ public: //Public functions
 	//Bool to get wheter we are the host or not
 	bool selectedAsHost() { return isHost; }
 	bool startGame() {return startTheGame; }
-	bool lostConnecion() { return lostConnection; }
+	bool lostConnection() { return m_lostConnection; }
+	bool gotGameUpdate;
 
-	void sendData(std::string data, Packet packet);
-
-	std::map<std::string, int> m_setupGameData;
+	void sendData(std::vector<int> data, Packet packet);
+	void sendData(std::vector<float> data, Packet packet);
 
 	std::vector<int> startGameData = { 99, 99 };
+	std::vector<float> gameUpdateData = { 0, 0 };
 
 private: //Private functions
 	bool ProcessPacket(Packet _packettype);
@@ -57,10 +59,8 @@ private: //Private functions
 	int sizeOfSAddr = sizeof(sAddr);
 	bool startTheGame;
 	bool isHost;
-	bool lostConnection;
+	bool m_lostConnection;
 	SOCKET serverConnection;
-
-	std::pair<std::string, Packet> m_setDataToSend; //We will set this outside of our class and send it during our thread handler
 };
 
 static Client * clientptr; //This client ptr is necessary so that the ClientThread method can access the Client instance/methods.

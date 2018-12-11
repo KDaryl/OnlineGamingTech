@@ -1,9 +1,39 @@
 #include "Network.h"
 
-void Client::sendData(std::string data, Packet packet)
+void Client::sendData(std::vector<float> data, Packet packet)
 {
-	m_setDataToSend.first = data;
-	m_setDataToSend.second = packet;
+	//Can stringify and send data depending on packet type
+	std::string msg = "";
+	switch (packet)
+	{
+	case P_SetupGame:
+		msg = "Colour:" + std::to_string(data.at(0)) + ",Position:" + std::to_string(data.at(1));
+		break;
+	case P_GameUpdate:
+		msg = "PosX:" + std::to_string(data.at(0)) + ",PosY:" + std::to_string(data.at(1));
+		break;
+	}
+
+	//Send the data
+	SendString(msg, packet);
+}
+
+void Client::sendData(std::vector<int> data, Packet packet)
+{
+	//Can stringify and send data depending on packet type
+	std::string msg = "";
+	switch (packet)
+	{
+		case P_SetupGame:
+			msg = "Colour:" + std::to_string(data.at(0)) + ",Position:" + std::to_string(data.at(1));
+			break;
+		case P_GameUpdate:
+			msg = "PosX:" + std::to_string(data.at(0)) + ",PosY:" + std::to_string(data.at(1));
+			break;
+	}
+
+	//Send the data
+	SendString(msg,packet);
 }
 
 bool Client::ProcessPacket(Packet _packettype)
@@ -52,7 +82,36 @@ bool Client::ProcessPacket(Packet _packettype)
 			std::cout << tkn << std::endl;
 			Message = Message.substr(pos + variableDelim.length());
 			start = pos;
-			startGameData.push_back(stoi(tkn));
+			startGameData.at(i) = stoi(tkn);
+		}
+		break;
+	}
+
+	case P_GameUpdate: //If packet is a setup game packet, read in the data
+	{
+		std::string Message; //string to store our message we received
+		if (!GetString(Message)) //Get the chat message and store it in variable: Message
+			return false; //If we do not properly get the chat message, return false
+
+		gotGameUpdate = true;
+
+		gameUpdateData.at(0) = 0;
+		gameUpdateData.at(1) = 0;
+		//Get the values
+		std::string valDelim = ":", variableDelim = ",";
+		std::string tkn = "";
+		int pos = 0, start = 0;
+
+		//Loop twice
+		for (int i = 0; i < 2; i++)
+		{
+			start = Message.find(valDelim);
+			pos = Message.find(variableDelim);
+			tkn = Message.substr(start + 1, pos - start - 1);
+			std::cout << tkn << std::endl;
+			Message = Message.substr(pos + variableDelim.length());
+			start = pos;
+			gameUpdateData.at(i) = stoi(tkn);
 		}
 		break;
 	}
@@ -66,7 +125,7 @@ bool Client::ProcessPacket(Packet _packettype)
 
 void Client::ClientThread()
 {
-	std::vector<Packet> PacketTypes = {P_ChatMessage, P_SetupGame};
+	std::vector<Packet> PacketTypes = {P_ChatMessage, P_SetupGame, P_GameUpdate};
 	while (true)
 	{
 		bool failed = true;
@@ -97,8 +156,7 @@ void Client::ClientThread()
 	}
 }
 
-Client::Client(std::string IP, int PORT) :
-	m_setDataToSend(std::pair<std::string, Packet>("EMPTY", P_ChatMessage))
+Client::Client(std::string IP, int PORT)
 {
 	//Winsock Startup
 	WSAData wsaData;
@@ -112,8 +170,11 @@ Client::Client(std::string IP, int PORT) :
 	addr.sin_addr.s_addr = inet_addr(IP.c_str()); //Address (127.0.0.1) = localhost (this pc)
 	addr.sin_port = htons(PORT); //Port 
 	addr.sin_family = AF_INET; //IPv4 Socket
-	lostConnection = false;
+	m_lostConnection = false;
 	clientptr = this; //Update ptr to the client which will be used by our client thread
+
+	startGameData.at(0) = 99;
+	startGameData.at(1) = 99;
 }
 
 bool Client::ConnectToServer()
@@ -126,7 +187,7 @@ bool Client::ConnectToServer()
 	}
 
 	std::cout << "Connected!" << std::endl;
-	lostConnection = false; //Set to false as we are now connected again
+	m_lostConnection = false; //Set to false as we are now connected again
 	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientThread, NULL, NULL, NULL); //Create the client thread that will receive any data that the server sends.
 	return true;
 }
@@ -134,7 +195,7 @@ bool Client::ConnectToServer()
 //Closes the connection to the SERVER
 bool Client::CloseConnection()
 {
-	lostConnection = true; //Set our lost connection bool to true
+	m_lostConnection = true; //Set our lost connection bool to true
 	if (closesocket(serverConnection) == SOCKET_ERROR)
 	{
 		if (WSAGetLastError() == WSAENOTSOCK) //If socket error is that operation is not performed on a socket (This happens when the socket has already been closed)

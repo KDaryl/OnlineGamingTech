@@ -7,7 +7,6 @@
 //Include MY header files
 #include "Timer.h"
 #include "SceneManager.h"
-#include "Network.h"
 
 class Game
 {
@@ -46,10 +45,7 @@ private:
 	bool m_connectedToServer;
 	bool m_clickedJoin;
 	bool m_startGame, m_gameHasStarted;
-	Client m_serverConnection;
 
 	//Packet sending/recieving objects
 	int m_myColourInt, m_mystartPosition;
-
-
 };
