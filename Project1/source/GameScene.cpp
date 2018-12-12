@@ -18,10 +18,20 @@ GameScene::~GameScene()
 {
 }
 
-void GameScene::init(int pos, int col, bool isHostBool)
+void GameScene::init(std::vector<int> values, bool isHostBool)
 {
-	m_isHost = isHostBool;
-	m_player.initPlayer(m_startPositions.at(pos), col);
+	m_isHost = isHostBool; //Set our host bool
+
+	if (m_isHost)
+	{
+		m_player.initPlayer(m_startPositions.at(values.at(2)), values.at(3));
+		m_otherPlayers.at(0).initPlayer(m_startPositions.at(values.at(0)), values.at(1));
+	}
+	else
+	{
+		m_player.initPlayer(m_startPositions.at(values.at(0)), values.at(1));
+		m_otherPlayers.at(0).initPlayer(m_startPositions.at(values.at(2)), values.at(3));
+	}
 }
 
 void GameScene::update(double dt)
@@ -30,12 +40,10 @@ void GameScene::update(double dt)
 	if (m_serverConnection.gotGameUpdate)
 	{
 		//Set the other players position
-		m_otherPlayers.at(0).setPosition(m_serverConnection.gameUpdateData.at(0), m_serverConnection.gameUpdateData.at(1));
-		m_serverConnection.gotGameUpdate = false; //Set to false
-	}
+		m_otherPlayers.at(0).setPosition(m_serverConnection.gameUpdateData.x, m_serverConnection.gameUpdateData.y);
 
-	//Get the previous position of the player
-	m_prevPos = m_player.getPosition();
+		m_serverConnection.gotGameUpdate = false;
+	}
 
 	//Update the player
 	m_player.update(dt);
@@ -43,23 +51,23 @@ void GameScene::update(double dt)
 	//Update other players
 	for (auto& player : m_otherPlayers)
 	{
-		player.update(dt);
+		player.serverUpdate();
 	}
 	
 	//If im the host, decide if collisions have occured
-	if (m_isHost)
+	if (m_isHost && m_gameOver == false)
 	{
 		for (auto& player : m_otherPlayers)
 		{
 			if (player.getCircleCollider().intersects(m_player.getCircleCollider()))
 			{
-				std::cout << "Players colliding, end game" << std::endl;
+				m_gameOver = true;
 			}
 		}
 	}
 
 	//Send update if my position has changed at all
-	if (m_prevPos != m_player.getPosition())
+	if (m_player.moved())
 	{
 		std::vector<float> values = {m_player.getPosition().x, m_player.getPosition().y };
 		//Send update
@@ -85,6 +93,17 @@ void GameScene::draw(SDL_Renderer * renderer)
 std::string GameScene::handleInput(InputHandler & input, std::string currentScene)
 {
 	std::string newScene = currentScene;
+
+	if (m_gameOver)
+	{
+		newScene = "Main Menu";
+		std::string msg = "Game Over";
+		m_serverConnection.SendString(msg, P_ChatMessage);
+	}
+	if (m_serverConnection.isGameOver())
+	{
+		newScene = "Main Menu";
+	}
 
 	m_player.handleInput(input);
 

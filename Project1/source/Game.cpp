@@ -144,18 +144,19 @@ void Game::update(double dt)
 		//If our start position has not been set, get them from the GameData
 		if (m_startGame == false && m_mystartPosition == 99)
 		{
-			m_myColourInt = m_sceneManager.m_gameScene.server().startGameData.at(0);
-			m_mystartPosition = m_sceneManager.m_gameScene.server().startGameData.at(1);
-
+			m_mystartPosition = m_sceneManager.m_gameScene.server().startGameData.at(0);
+			m_myColourInt = m_sceneManager.m_gameScene.server().startGameData.at(1);
 			//If the data has been recieved then start
-			if(m_myColourInt != 99 && m_mystartPosition != 99)
+			if (m_myColourInt != 99 && m_mystartPosition != 99)
+			{
+				m_sceneManager.m_gameScene.init(m_sceneManager.m_gameScene.server().startGameData, m_sceneManager.m_gameScene.server().selectedAsHost());
 				m_startGame = true;
+			}
 		}
 
 		//set player colours and starting positions and send them to the other player
 		if (m_startGame)
 		{
-			m_sceneManager.m_gameScene.init(m_mystartPosition, m_myColourInt, m_sceneManager.m_gameScene.server().selectedAsHost());
 			m_gameHasStarted = true; //Set game started to true
 			m_sceneManager.setCurrent("Game Scene");
 		}
@@ -196,17 +197,23 @@ void Game::setUpGame()
 	m_myColourInt = hostColourIndex;
 	m_mystartPosition = hostPosition;
 
+	std::cout << "my start pos " << hostPosition << std::endl;
+	std::cout << "my start color " << hostColourIndex << std::endl;
+
 	//Set the color and position of the other player(s)
 	int otherStartPos = hostPosition == 0 ? 3 : hostPosition == 1 ? 2 : hostPosition == 2 ? 1 : 0;
 	int otherColour = hostColourIndex == 0 ? 3 : hostColourIndex == 1 ? 2 : hostColourIndex == 2 ? 1 : 0;
 
-	std::vector<int> values = {otherStartPos, otherColour};
+	std::cout << "other pos " << otherStartPos << std::endl;
+	std::cout << "other color " << otherColour << std::endl;
+
+	std::vector<int> values = {otherStartPos, otherColour, m_mystartPosition, m_myColourInt};
 
 	//Send the message to every other player (just 1 for now) as a SetupGame packet
 	m_sceneManager.m_gameScene.server().sendData(values, P_SetupGame);
 
-	//Set position and colour of other player
-	m_sceneManager.m_gameScene.setOtherPlayerPosition(otherStartPos, otherColour);
+
+	m_sceneManager.m_gameScene.init(values, m_sceneManager.m_gameScene.server().selectedAsHost());
 
 	std::cout << "Setting up game" << std::endl;
 }
@@ -224,6 +231,8 @@ void Game::handleInput()
 		m_clickedJoin = true;
 	else if (action == "Exit Game")
 		m_quitGame = true;
+	else if (action == "Main Menu")
+		m_sceneManager.setCurrent("Main Menu");
 }
 
 void Game::draw()

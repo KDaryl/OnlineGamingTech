@@ -7,6 +7,8 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <assert.h>
+#include "Vector2f.h"
 
 enum Packet
 {
@@ -29,13 +31,14 @@ public: //Public functions
 	bool selectedAsHost() { return isHost; }
 	bool startGame() {return startTheGame; }
 	bool lostConnection() { return m_lostConnection; }
+	bool isGameOver() { return gameOver; }
 	bool gotGameUpdate;
 
 	void sendData(std::vector<int> data, Packet packet);
 	void sendData(std::vector<float> data, Packet packet);
 
-	std::vector<int> startGameData = { 99, 99 };
-	std::vector<float> gameUpdateData = { 0, 0 };
+	std::vector<int> startGameData = { 99, 99, 99, 99 };
+	Vector2f gameUpdateData;
 
 private: //Private functions
 	bool ProcessPacket(Packet _packettype);
@@ -58,7 +61,7 @@ private: //Private functions
 	int sizeofaddr = sizeof(addr); //Need sizeofaddr for the connect function
 	int sizeOfSAddr = sizeof(sAddr);
 	bool startTheGame;
-	bool isHost;
+	bool isHost, gameOver;
 	bool m_lostConnection;
 	SOCKET serverConnection;
 };

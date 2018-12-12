@@ -28,6 +28,7 @@ public:
 	//Get circle collider
 	CollisionCircle& getCircleCollider() { return m_circleCollider; }
 	Vector2f& getPosition() { return m_position; }
+	bool& moved() { return m_moved; }
 
 private:
 	//Simple rect class
@@ -49,6 +50,7 @@ private:
 	Vector2f m_position, m_velocity;
 	float m_speed, m_deltaTime;
 	int m_textureIndex;
+	bool m_moved;
 	Sprite m_sprite;
 	CollisionBox m_boxCollider;
 	CollisionCircle m_circleCollider;

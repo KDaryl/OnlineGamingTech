@@ -25,7 +25,7 @@ void Client::sendData(std::vector<int> data, Packet packet)
 	switch (packet)
 	{
 		case P_SetupGame:
-			msg = "Colour:" + std::to_string(data.at(0)) + ",Position:" + std::to_string(data.at(1));
+			msg = "Colour:" + std::to_string(data.at(0)) + ",Position:" + std::to_string(data.at(1)) + ",otherP:" + std::to_string(data.at(2)) + ",otherC:" + std::to_string(data.at(3));
 			break;
 		case P_GameUpdate:
 			msg = "PosX:" + std::to_string(data.at(0)) + ",PosY:" + std::to_string(data.at(1));
@@ -53,8 +53,14 @@ bool Client::ProcessPacket(Packet _packettype)
 			//Reset the start game data
 			startGameData.at(0) = 99;
 			startGameData.at(1) = 99;
+			startGameData.at(2) = 99;
+			startGameData.at(3) = 99;
 			//Set us as the host
 			isHost = true;
+		}
+		else if (Message == "Game Over")
+		{
+			gameOver = true;
 		}
 		break;
 	}
@@ -68,13 +74,15 @@ bool Client::ProcessPacket(Packet _packettype)
 
 		startGameData.at(0) = 99;
 		startGameData.at(1) = 99;
+		startGameData.at(2) = 99;
+		startGameData.at(3) = 99;
 		//Get the values
 		std::string valDelim = ":", variableDelim = ",";
 		std::string tkn = "";
 		int pos = 0, start = 0;
 
 		//Loop twice
-		for(int i = 0; i < 2; i++)
+		for(int i = 0; i < 4; i++)
 		{
 			start = Message.find(valDelim);
 			pos = Message.find(variableDelim);
@@ -95,8 +103,6 @@ bool Client::ProcessPacket(Packet _packettype)
 
 		gotGameUpdate = true;
 
-		gameUpdateData.at(0) = 0;
-		gameUpdateData.at(1) = 0;
 		//Get the values
 		std::string valDelim = ":", variableDelim = ",";
 		std::string tkn = "";
@@ -108,10 +114,12 @@ bool Client::ProcessPacket(Packet _packettype)
 			start = Message.find(valDelim);
 			pos = Message.find(variableDelim);
 			tkn = Message.substr(start + 1, pos - start - 1);
-			std::cout << tkn << std::endl;
 			Message = Message.substr(pos + variableDelim.length());
 			start = pos;
-			gameUpdateData.at(i) = stoi(tkn);
+			if(i==0)
+				gameUpdateData.x = stof(tkn);
+			else
+				gameUpdateData.y = stof(tkn);
 		}
 		break;
 	}
@@ -172,9 +180,6 @@ Client::Client(std::string IP, int PORT)
 	addr.sin_family = AF_INET; //IPv4 Socket
 	m_lostConnection = false;
 	clientptr = this; //Update ptr to the client which will be used by our client thread
-
-	startGameData.at(0) = 99;
-	startGameData.at(1) = 99;
 }
 
 bool Client::ConnectToServer()

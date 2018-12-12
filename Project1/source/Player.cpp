@@ -20,6 +20,8 @@ void Player::initPlayer(Vector2f pos, int textureIndex)
 {
 	m_position = pos;
 	m_textureIndex = textureIndex;
+	auto& rect = m_textureRects.at(m_textureIndex);
+	m_sprite.setTextureRect(rect.m_x, rect.m_y, rect.m_w, rect.m_h);
 }
 
 void Player::setTexture(ResourceHandler & resources)
@@ -40,6 +42,11 @@ void Player::setPosition(float x, float y)
 	//Set our starting position
 	m_position.x = x;
 	m_position.y = y;
+
+	//Set our collider and sprite positions
+	m_circleCollider.setPosition(m_position.x, m_position.y);
+	m_boxCollider.setPosition(m_position.x, m_position.y);
+	m_sprite.setPosition(m_position.x, m_position.y);
 }
 
 void Player::update(double dt)
@@ -49,6 +56,16 @@ void Player::update(double dt)
 	//Add our velocity to our position
 	m_position += m_velocity;
 
+	//Bound checking
+	if (m_position.x > 1280 + 75)
+		m_position.x = -75;
+	else if (m_position.x < -75)
+		m_position.x = 1280 + 75;
+	else if (m_position.y > 720 + 75)
+		m_position.y = -75;
+	else if (m_position.y < -75)
+		m_position.y = 720 + 75;
+
 	//Set our collider and sprite positions
 	m_circleCollider.setPosition(m_position.x, m_position.y);
 	m_boxCollider.setPosition(m_position.x, m_position.y);
@@ -57,6 +74,10 @@ void Player::update(double dt)
 
 void Player::serverUpdate()
 {
+	//Set our collider and sprite positions
+	m_circleCollider.setPosition(m_position.x, m_position.y);
+	m_boxCollider.setPosition(m_position.x, m_position.y);
+	m_sprite.setPosition(m_position.x, m_position.y);
 }
 
 void Player::draw(SDL_Renderer * renderer)
@@ -69,6 +90,7 @@ void Player::handleInput(InputHandler & input)
 {
 	//Reset velocity
 	m_velocity.zeroVector();
+	m_moved = false;
 
 	//Add speed to our position if we move
 	if(input.isButtonDown("W"))
@@ -91,6 +113,7 @@ void Player::handleInput(InputHandler & input)
 	//Get the speed of the vector in both x and y if the vector had changed
 	if (m_velocity != Vector2f(0, 0))
 	{
+		m_moved = true;
 		//Set the velocity by getting the angle
 		m_velocity = m_velocity.normalise() * m_speed * m_deltaTime;
 	}
