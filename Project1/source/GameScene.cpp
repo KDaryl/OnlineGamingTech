@@ -1,7 +1,7 @@
 #include "GameScene.h"
 
 GameScene::GameScene() :
-	m_serverConnection("127.0.0.1", 100) //Create connection to server at ip and port
+	m_serverConnection("149.153.106.172", 100) //Create connection to server at ip and port
 {
 	//The four starting positions that the player can be in
 	m_startPositions.push_back(Vector2f(0, 0));
@@ -84,33 +84,42 @@ void GameScene::draw(SDL_Renderer * renderer)
 	//Draw the background
 	m_bgSprite.draw(renderer);
 
-	//Draw the player
-	m_player.draw(renderer);
+	if (m_gameOver == false)
+	{
+		//Draw the player
+		m_player.draw(renderer);
 
-	//Draw our you indicator so the player knows which circle they are
-	m_youIndicator.draw(renderer);
+		//Draw our you indicator so the player knows which circle they are
+		m_youIndicator.draw(renderer);
 
-	//Draw other players
-	for (auto& player : m_otherPlayers)
-		player.draw(renderer);
+		//Draw other players
+		for (auto& player : m_otherPlayers)
+			player.draw(renderer);
+	}
+	else
+	{
+		m_gameOverSprite.draw(renderer);
+	}
 }
 
 std::string GameScene::handleInput(InputHandler & input, std::string currentScene)
 {
 	std::string newScene = currentScene;
 
-	if (m_gameOver)
+	if (m_gameOver == false)
 	{
-		newScene = "Main Menu";
-		std::string msg = "Game Over";
-		m_serverConnection.SendString(msg, P_ChatMessage);
-	}
-	if (m_serverConnection.isGameOver())
-	{
-		newScene = "Main Menu";
-	}
+		if (m_gameOver)
+		{
+			std::string msg = "Game Over";
+			m_serverConnection.SendString(msg, P_ChatMessage);
+		}
+		if (m_serverConnection.isGameOver())
+		{
+			m_gameOver = true;
+		}
 
-	m_player.handleInput(input);
+		m_player.handleInput(input);
+	}
 
 	return newScene;
 }
@@ -121,6 +130,7 @@ void GameScene::setTexture(ResourceHandler & resources)
 	m_otherPlayers.at(0).setTexture(resources);
 	m_bgSprite.setTexture(resources.getTexture("Game BG"));
 	m_youIndicator.setTexture(resources.getTexture("You Indicator"));
+	m_gameOverSprite.setTexture(resources.getTexture("Game Over"));
 }
 
 void GameScene::setOtherPlayerPosition(int pos, int col)

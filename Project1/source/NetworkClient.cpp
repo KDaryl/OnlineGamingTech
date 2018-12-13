@@ -61,6 +61,7 @@ bool Client::ProcessPacket(Packet _packettype)
 		else if (Message == "Game Over")
 		{
 			gameOver = true;
+			std::cout << "Got game over message" << std::endl;
 		}
 		break;
 	}

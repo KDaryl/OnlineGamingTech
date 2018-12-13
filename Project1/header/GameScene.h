@@ -26,7 +26,7 @@ private:
 	Client m_serverConnection; //Sever connection
 	Player m_player; //Local player
 	std::vector<Player> m_otherPlayers; //The other players that will be in the game
-	Sprite m_bgSprite, m_youIndicator;
+	Sprite m_bgSprite, m_youIndicator, m_gameOverSprite;
 	bool m_isHost, m_gameOver;
 
 	std::vector<Vector2f> m_startPositions;
