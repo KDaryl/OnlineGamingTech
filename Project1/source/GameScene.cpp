@@ -8,6 +8,7 @@ GameScene::GameScene() :
 	m_startPositions.push_back(Vector2f(1205, 0));
 	m_startPositions.push_back(Vector2f(0, 645));
 	m_startPositions.push_back(Vector2f(1205, 645));
+	m_startPositions.push_back(Vector2f(565, 300)); //Chaser start position
 
 	m_otherPlayers.push_back(Player());
 
@@ -73,6 +74,9 @@ void GameScene::update(double dt)
 		//Send update
 		m_serverConnection.sendData(values, P_GameUpdate);
 	}
+
+	//Set the position fo our you indicator
+	m_youIndicator.setPosition(m_player.getPosition());
 }
 
 void GameScene::draw(SDL_Renderer * renderer)
@@ -83,11 +87,12 @@ void GameScene::draw(SDL_Renderer * renderer)
 	//Draw the player
 	m_player.draw(renderer);
 
+	//Draw our you indicator so the player knows which circle they are
+	m_youIndicator.draw(renderer);
+
 	//Draw other players
 	for (auto& player : m_otherPlayers)
-	{
 		player.draw(renderer);
-	}
 }
 
 std::string GameScene::handleInput(InputHandler & input, std::string currentScene)
@@ -115,6 +120,7 @@ void GameScene::setTexture(ResourceHandler & resources)
 	m_player.setTexture(resources);
 	m_otherPlayers.at(0).setTexture(resources);
 	m_bgSprite.setTexture(resources.getTexture("Game BG"));
+	m_youIndicator.setTexture(resources.getTexture("You Indicator"));
 }
 
 void GameScene::setOtherPlayerPosition(int pos, int col)

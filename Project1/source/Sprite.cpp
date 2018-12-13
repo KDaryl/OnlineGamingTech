@@ -53,6 +53,15 @@ void Sprite::setPosition(float x, float y)
 	m_collider.setPosition(m_pos.x, m_pos.y);
 }
 
+void Sprite::setPosition(Vector2f pos)
+{
+	//Set the position
+	m_pos = pos;
+
+	//Set the position of our collider
+	m_collider.setPosition(m_pos.x, m_pos.y);
+}
+
 void Sprite::setTextureRect(int x, int y, int w, int h)
 {
 	//Change the source rectangle of the image we want to display

@@ -29,6 +29,7 @@ public:
 	//Setters
 	void setTexture(SDL_Texture* texture);
 	void setPosition(float x, float y);
+	void setPosition(Vector2f pos);
 	void setTextureRect(int x, int y, int w, int h);
 
 	//Getters
@@ -36,6 +37,7 @@ public:
 	float getY() { return m_pos.y; }
 	float getW() { return m_dst.w; }
 	float getH() { return m_dst.h; }
+	Vector2f getPosition() { return m_pos; }
 	SDL_Rect getRect() { return m_dst; }
 	CollisionBox& getCollider() { return m_collider; }
 private:

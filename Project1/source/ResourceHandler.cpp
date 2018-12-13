@@ -17,6 +17,7 @@ void ResourceHandler::loadTextures(SDL_Renderer& renderer)
 	m_map["Join Game Button"] = loadFromPath("Join Game Button.png", renderer);
 	m_map["Options Button"] = loadFromPath("Options Button.png", renderer);
 	m_map["Exit Game Button"] = loadFromPath("Exit Button.png", renderer);
+	m_map["You Indicator"] = loadFromPath("You Indicator.png", renderer);
 }
 
 SDL_Texture* ResourceHandler::loadFromPath(std::string fileName, SDL_Renderer& renderer)

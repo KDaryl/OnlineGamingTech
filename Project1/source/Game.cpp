@@ -191,19 +191,39 @@ void Game::update(double dt)
 void Game::setUpGame()
 {
 	int hostColourIndex = randInt(0, 3);
-	int hostPosition = randInt(0, 3);
+	int hostPosition = randInt(0, 4);
 
 	//Set the hosts position
 	m_myColourInt = hostColourIndex;
 	m_mystartPosition = hostPosition;
 
+	int otherStartPos, otherColour = 99;
+
+	//Set the color and position of the other player(s), host is the chaser
+	if (hostPosition == 4)
+	{
+		otherStartPos = randInt(0, 3); //Get a random position
+		while (otherColour != 0 && otherColour != 1 && otherColour != 3)
+			otherColour = randInt(0,3); //Get a random colour thats not red
+		hostColourIndex = 2; //Set the host as red as he is the chaser
+	}
+	else
+	{
+		//Change the hosts colour to something that is not red
+		m_myColourInt = 99;
+		while (m_myColourInt != 0 && m_myColourInt != 1 && m_myColourInt != 3)
+			m_myColourInt = randInt(0,3);
+		
+		//Set the others players colour as red, and their start pos to the centre of the screen
+		otherColour = 2;
+		otherStartPos = 4;
+	}
+	//otherStartPos = hostPosition == 0 ? 3 : hostPosition == 1 ? 2 : hostPosition == 2 ? 1 : 0;
+	//otherColour = hostColourIndex == 0 ? 3 : hostColourIndex == 1 ? 2 : hostColourIndex == 2 ? 1 : 0;
+
+
 	std::cout << "my start pos " << hostPosition << std::endl;
 	std::cout << "my start color " << hostColourIndex << std::endl;
-
-	//Set the color and position of the other player(s)
-	int otherStartPos = hostPosition == 0 ? 3 : hostPosition == 1 ? 2 : hostPosition == 2 ? 1 : 0;
-	int otherColour = hostColourIndex == 0 ? 3 : hostColourIndex == 1 ? 2 : hostColourIndex == 2 ? 1 : 0;
-
 	std::cout << "other pos " << otherStartPos << std::endl;
 	std::cout << "other color " << otherColour << std::endl;
 
